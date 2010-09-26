@@ -38,7 +38,7 @@
  *	@version		$Id: Filter.php5 667 2010-05-18 15:16:09Z christian.wuerker $
  *	@todo			Code Doc
  */
-class ENS_Parameter_Filter
+class CMM_ENS_Parameter_Filter
 {
 	/**
 	 *	...

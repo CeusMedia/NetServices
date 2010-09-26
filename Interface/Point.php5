@@ -37,7 +37,7 @@
  *	@since			0.6.3
  *	@version		$Id: Point.php5 667 2010-05-18 15:16:09Z christian.wuerker $
  */
-interface ENS_Interface_Point
+interface CMM_ENS_Interface_Point
 {
 	/**
 	 *	Constructor Method.

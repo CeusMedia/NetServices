@@ -33,7 +33,7 @@
  *	@package		ENS
  *	@extends		UI_HTML_Service_Index
  *	@uses			Net_HTTP_Request_Receiver
- *	@uses			ENS_Point
+ *	@uses			CMM_ENS_Point
  *	@author			Christian Würker <christian.wuerker@ceusmedia.de>
  *	@copyright		2007-2010 Christian Würker
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
@@ -41,7 +41,7 @@
  *	@since			0.6.5
  *	@version		$Id: BaseServer.php5 667 2010-05-18 15:16:09Z christian.wuerker $
  */
-class ENS_BaseServer extends UI_HTML_Service_Index
+class CMM_ENS_BaseServer extends UI_HTML_Service_Index
 {
 	/**
 	 *	Constructor, sets up new Service Point.
@@ -67,7 +67,7 @@ class ENS_BaseServer extends UI_HTML_Service_Index
 
 		try
 		{
-			$servicePoint	= new ENS_Point( $fileName );
+			$servicePoint	= new CMM_ENS_Point( $fileName );
 			parent::__construct( $servicePoint, $formatList );
 			if( $requestHandler->has( 'index' ) )
 				$this->showServiceIndex( $servicePoint, $allowedFormats );
@@ -117,7 +117,7 @@ class ENS_BaseServer extends UI_HTML_Service_Index
 	 *	Builds *very* simple Service List and exits.
 	 *	Overwrite this Method to customize.
 	 *	@access		protected
-	 *	@param		ENS_Point	$servicePoint		Service Point Instance
+	 *	@param		CMM_ENS_Point	$servicePoint		Service Point Instance
 	 *	@param		array				$allowedFormats		List of allowed Response Formats
 	 *	@return		string
 	 */

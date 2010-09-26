@@ -37,7 +37,7 @@
  *	@since			0.6.3
  *	@version		$Id: Response.php5 667 2010-05-18 15:16:09Z christian.wuerker $
  */
-class ENS_Response
+class CMM_ENS_Response
 {
 	protected $clock	= NULL;
 

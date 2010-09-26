@@ -31,7 +31,7 @@
  *	@category		cmModules
  *	@package		ENS.Definition
  *	@uses			Net_Serivce_Definition_Reader
- *	@uses			ENS_Definition_Writer
+ *	@uses			CMM_ENS_Definition_Writer
  *	@uses			File_YAML_Reader
  *	@uses			File_YAML_Writer
  *	@uses			File_Reader
@@ -46,7 +46,7 @@
  *	@version		$Id: Converter.php5 667 2010-05-18 15:16:09Z christian.wuerker $
  *	@todo			Code Doc
  */
-class ENS_Definition_Converter
+class CMM_ENS_Definition_Converter
 {
 	/**
 	 *	Converts a JSON File into a XML File statically.
@@ -60,7 +60,7 @@ class ENS_Definition_Converter
 	{
 		$json	= File_Reader::load( $jsonFile );
 		$data	= ADT_JSON_Converter::convertToArray( $json );
-		return ENS_Definition_XmlWriter::save( $xmlFile, $data );
+		return CMM_ENS_Definition_XmlWriter::save( $xmlFile, $data );
 	}
 
 	/**
@@ -88,7 +88,7 @@ class ENS_Definition_Converter
 	 */
 	public static function convertXmlFileToJsonFile( $xmlFile, $jsonFile )
 	{
-		$data	= ENS_Definition_XmlReader::load( $xmlFile );
+		$data	= CMM_ENS_Definition_XmlReader::load( $xmlFile );
 		self::reduceDefinition( $data );
 		$json	= json_encode( $data );
 		$json	= ADT_JSON_Formater::format( $json );
@@ -106,7 +106,7 @@ class ENS_Definition_Converter
 	 */
 	public static function convertXmlFileToYamlFile( $xmlFile, $yamlFile )
 	{
-		$data	= ENS_Definition_XmlReader::load( $xmlFile );
+		$data	= CMM_ENS_Definition_XmlReader::load( $xmlFile );
 		self::reduceDefinition( $data );
 		return File_YAML_Writer::save( $yamlFile, $data );
 	}
@@ -140,7 +140,7 @@ class ENS_Definition_Converter
 	{
 		$data	= File_YAML_Reader::load( $yamlFile );
 		self::reduceDefinition( $data );
-		return ENS_Definition_XmlWriter::save( $xmlFile, $data );
+		return CMM_ENS_Definition_XmlWriter::save( $xmlFile, $data );
 	}
 
 	protected static function reduceDefinition( &$definition )

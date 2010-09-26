@@ -1,9 +1,8 @@
 <?php
 /**
  *	Access Point for Service Calls.
- *	A different Service Parameter Validator Class can be used by setting static Member "validatorClass".
- *	If a different Validator Class should be used, it needs to be imported before.
- *	A different Service Definition Loader Class can be used by setting static Member "loaderClass".
+ *	Different classes for validation, filtering and definition loading can be set.
+ *	They need to be loaded before or available using an autoloader.
  *
  *	Copyright (c) 2007-2010 Christian Würker (ceusmedia.de)
  *
@@ -32,37 +31,36 @@
  */
 /**
  *	Access Point for Service Calls.
- *	A different Service Parameter Validator Class can be used by setting static Member "validatorClass".
- *	If a different Validator Class should be used, it needs to be imported before.
- *	A different Service Definition Loader Class can be used by setting static Member "loaderClass".
- *	If a different Loader Class should be used, it needs to be imported before.
+ *	Different classes for validation, filtering and definition loading can be set.
+ *	They need to be loaded before or available using an autoloader.
  *	@category		cmModules
  *	@package		ENS
- *	@implements		ENS_Interface_Point
- *	@uses			ENS_Parameter_Validator
- *	@uses			ENS_Parameter_Filter
- *	@uses			ENS_Definition_Loader
+ *	@implements		CMM_ENS_Interface_Point
+ *	@uses			CMM_ENS_Parameter_Validator
+ *	@uses			CMM_ENS_Parameter_Filter
+ *	@uses			CMM_ENS_Definition_Loader
  *	@author			Christian Würker <christian.wuerker@ceusmedia.de>
  *	@copyright		2007-2010 Christian Würker
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
  *	@link			http://code.google.com/p/cmmodules/
  *	@since			0.6.3
  *	@version		$Id: Point.php5 667 2010-05-18 15:16:09Z christian.wuerker $
+ *	@todo			make use of CMCs predicate validator
  */
-class ENS_Point implements ENS_Interface_Point
+class CMM_ENS_Point implements CMM_ENS_Interface_Point
 {
 	/**	@var		string			$defaultLoader		Default Definition Loader Class */
-	protected $defaultLoader		= "ENS_Definition_Loader";
+	protected $defaultLoader		= "CMM_ENS_Definition_Loader";
 	/**	@var		string			$defaultValidator	Default Validator Class */
-	protected $defaultFilter		= "ENS_Parameter_Filter";
+	protected $defaultFilter		= "CMM_ENS_Parameter_Filter";
 	/**	@var		string			$defaultValidator	Default Validator Class */
-	protected $defaultValidator		= "ENS_Parameter_Validator";
+	protected $defaultValidator		= "CMM_ENS_Parameter_Validator";
 	/**	@var		string			$validatorClass		Definition Loader Class to use */
-	public static $loaderClass		= "ENS_Definition_Loader";
+	public static $loaderClass		= "CMM_ENS_Definition_Loader";
 	/**	@var		string			$filterClass		Filter Class to use */
-	public static $filterClass		= "ENS_Parameter_Filter";
+	public static $filterClass		= "CMM_ENS_Parameter_Filter";
 	/**	@var		string			$validatorClass		Validator Class to use */
-	public static $validatorClass	= "ENS_Parameter_Validator";
+	public static $validatorClass	= "CMM_ENS_Parameter_Validator";
 	/**	@var		array			$services			Array of Services */	
 	protected $services				= array();
 	/**	@var		mixed			$validator			Validator Class */	
@@ -78,22 +76,8 @@ class ENS_Point implements ENS_Interface_Point
 	public function __construct( $fileName, $cacheFile = NULL )
 	{
 		$this->loadServices( $fileName, $cacheFile );												//  load Service Definition from File
-		if( self::$filterClass == $this->defaultFilter )											//  no custom Folder Class was defined
-			import( 'de.ceus-media.net.service.parameter.Filter' );									//  load default Filter Class
-		$this->filter	= new self::$filterClass;													//  create Filter Object
-		if( self::$validatorClass == $this->defaultValidator )										//  no custom Validator Class was defined
-			import( 'de.ceus-media.net.service.parameter.Validator' );								//  load default Validator Class
-		$this->validator	= new self::$validatorClass;											//  create Validator Object
-	}
-
-	public function getAllFormats()
-	{
-		$formats	= array();
-		foreach( $this->services['services'] as $service )
-			foreach( $service['formats'] as $format )
-				if( !in_array( $format, $formats ) )
-					array_push( $formats, $format );
-		return $formats;
+		$this->filter		= Alg_Object_Factory::createObject( self::$filterClass );				//  create Filter Object
+		$this->validator	= Alg_Object_Factory::createObject( self::$validatorClass );			//  create Validator Object
 	}
 
 	/**
@@ -131,6 +115,7 @@ class ENS_Point implements ENS_Interface_Point
 					$value		= $requestData[$name];
 					if( $type == "array" && is_string( $value ) )
 						$value	= parse_str( $value );												//  realise Request Value
+					$value	= $this->realizeParameterType( $value, $type );
 				}
 				$serviceFilters	= $this->services['services'][$serviceName]['filters'];				//  global Service Filters
 				foreach( array_keys( $serviceFilters ) as $filterMethod )							//  iterate
@@ -147,10 +132,9 @@ class ENS_Point implements ENS_Interface_Point
 				$parameters[$name]	= $value;
 			}
 		}
-		
-		$class		= $this->services['services'][$serviceName]['class'];
-		$object		= new $class;
-		$response	= call_user_func_array( array( $object, $serviceName ), $parameters );
+		$className	= $this->getServiceClass( $serviceName );										//  get service class name							
+		$object		= Alg_Object_Factory::createObject( $className );								//  create service object
+		$response	= Alg_Object_MethodFactory::call( $object, $serviceName, $parameters );			//  call service method
 		return $response;
 	}
 
@@ -165,7 +149,7 @@ class ENS_Point implements ENS_Interface_Point
 		if( !isset( $this->services['services'][$serviceName] ) )
 			throw new BadFunctionCallException( 'Service "'.$serviceName.'" is not existing' );
 		if( !isset( $this->services['services'][$serviceName]['class'] ) )
-			throw new RuntimeException( 'No Service Class definied for Service "'.$serviceName.'"' );
+			throw new RuntimeException( 'No service class definied for service "'.$serviceName.'"' );
 	}
 
 	/**
@@ -180,10 +164,12 @@ class ENS_Point implements ENS_Interface_Point
 			throw new BadFunctionCallException( 'Service "'.$serviceName.'" is not existing' );
 		$className	= $this->services['services'][$serviceName]['class'];
 		if( !class_exists( $className ) && !$this->loadServiceClass( $className ) )
-			throw new RuntimeException( 'Service Class "'.$className.'" is not existing' );
+			throw new RuntimeException( 'Service class "'.$className.'" is not existing' );
 		$methods	= get_class_methods( $className );
-		if( !in_array( $serviceName, $methods ) )
-			throw new BadMethodCallException( 'Method "'.$serviceName.'" does not exist in Service Class "'.$className.'"' );
+		if( in_array( $serviceName, $methods ) )
+			return;
+		$message	= 'Method "'.$serviceName.'" does not exist in service class "'.$className.'"';
+		throw new BadMethodCallException( $message );
 	}
 
 	/**
@@ -197,12 +183,16 @@ class ENS_Point implements ENS_Interface_Point
 	{
 		if( $responseFormat )
 		{
-			if( !in_array( $responseFormat, $this->services['services'][$serviceName]['formats'] ) )
-				throw new InvalidArgumentException( 'Response Format "'.$responseFormat.'" for Service "'.$serviceName.'" is not available' );
-			return true;
+			$formats	= $this->services['services'][$serviceName]['formats'];
+			if( in_array( $responseFormat, $formats ) )
+				return;
+			$message	= 'Response format "'.$responseFormat.'" for service "'.$serviceName.'" is not available';
+			throw new InvalidArgumentException( $message );
 		}
-		if( !$this->getDefaultServiceFormat( $serviceName ) )
-			throw new RuntimeException( 'No Response Format given and no default Response Format set for Service "'.$serviceName.'"' );
+		if( $this->getDefaultServiceFormat( $serviceName ) )										//  a default format there is defined 
+			return;
+		$message	= 'No response format given / set by default for service "'.$serviceName.'"';
+		throw new RuntimeException( $message );
 	}
 
 	/**
@@ -229,60 +219,31 @@ class ENS_Point implements ENS_Interface_Point
 				if( $type == "array" && is_string( $value ) )
 					$value	= parse_str( $value );
 			}
-
 			try
 			{
 				$this->validator->validateParameterValue( $rules, $value );
 			}
 			catch( InvalidArgumentException $e )
 			{
-				throw new InvalidArgumentException( 'Parameter "'.$name.'" for Service "'.$serviceName.'" failed Rule "'.$e->getMessage().'"' );			
+				$message	= 'Parameter "'.$name.'" for service "'.$serviceName.'" failed rule "'.$e->getMessage().'"';
+				throw new InvalidArgumentException( $message );			
 			}
 		}
 	}
 
 	/**
-	 *	Returns default Type of Service Parameter.
+	 *	Returns a List of all possibly supported formats.
 	 *	@access		public
-	 *	@param		string			$serviceName		Name of Service to call 
-	 *	@param		arrray			$parameterName		Name oif Parameter to get default Type for
-	 *	@return		string
+	 *	@return		array		List of formats
 	 */
-	public function getServiceDefaultParameterType( $serviceName, $parameterName )
+	public function getAllFormats()
 	{
-		$type	= "unknown";
-		$parameters	= $this->getServiceParameters( $serviceName );
-		if( !$parameters )
-			throw new InvalidArgumentException( 'Service "'.$serviceName.'" does not receive any Parameters' );
-		if( !isset( $parameters[$parameterName] ) )
-			throw new InvalidArgumentException( 'Parameter "'.$parameterName.'" for Service "'.$serviceName.'" is not defined' );
-		$parameter	= $parameters[$parameterName];
-		if( isset( $parameter['type'] ) )
-			$type	= $parameter['type'];
-		return $type;
-	}
-
-	protected function realizeParameterType( $value, $type )
-	{
-		switch( $type )
-		{
-			case 'array':
-				$value	= parse_str( (string) $value );
-				break;
-			case 'string':
-			case 'int':
-			case 'integer':
-			case 'float':
-			case 'double':
-			case 'real':
-			case 'bool':
-			case 'boolean':
-#				settype( $value, $type );
-				break;
-			default:
-				$value	= $default;
-		}
-		return $value;
+		$formats	= array();
+		foreach( $this->services['services'] as $service )											//  iterate all services
+			foreach( $service['formats'] as $format )												//  iterate service formats
+				if( !in_array( $format, $formats ) )												//  format has not been noted yet
+					array_push( $formats, $format );												//  append format to list
+		return $formats;																			//  return format list
 	}
 
 	/**
@@ -296,10 +257,10 @@ class ENS_Point implements ENS_Interface_Point
 		$this->checkServiceDefinition( $serviceName );
 		$responseFormats	= $this->services['services'][$serviceName]['formats'];
 		if( !isset( $this->services['services'][$serviceName]['preferred'] ) )
-			return "";
+			return '';
 		$default	=  $this->services['services'][$serviceName]['preferred'];
 		if( !in_array( $default, $responseFormats ) )
-			return "";
+			return '';
 		return $default;
 	}
 
@@ -326,6 +287,27 @@ class ENS_Point implements ENS_Interface_Point
 	}
 
 	/**
+	 *	Returns default Type of Service Parameter.
+	 *	@access		public
+	 *	@param		string			$serviceName		Name of Service to call 
+	 *	@param		arrray			$parameterName		Name oif Parameter to get default Type for
+	 *	@return		string
+	 */
+	public function getServiceDefaultParameterType( $serviceName, $parameterName )
+	{
+		$type	= "unknown";
+		$parameters	= $this->getServiceParameters( $serviceName );
+		if( !$parameters )
+			throw new InvalidArgumentException( 'Service "'.$serviceName.'" does not receive any parameters' );
+		if( !isset( $parameters[$parameterName] ) )
+			throw new InvalidArgumentException( 'Parameter "'.$parameterName.'" for service "'.$serviceName.'" is not defined' );
+		$parameter	= $parameters[$parameterName];
+		if( isset( $parameter['type'] ) )
+			$type	= $parameter['type'];
+		return $type;
+	}
+
+	/**
 	 *	Returns Description of Service.
 	 *	@access		public
 	 *	@param		string			$serviceName		Name of Service to call 
@@ -336,7 +318,7 @@ class ENS_Point implements ENS_Interface_Point
 		$this->checkServiceDefinition( $serviceName );
 		if( isset( $this->services['services'][$serviceName]['description'] ) )
 			return $this->services['services'][$serviceName]['description'];
-		return "";
+		return '';
 	}
 
 	/**
@@ -362,6 +344,19 @@ class ENS_Point implements ENS_Interface_Point
 		$this->checkServiceDefinition( $serviceName );
 		return $this->services['services'][$serviceName]['formats'];
 	}
+	
+	/**
+	 *	Returns available Formats of Service.
+	 *	@access		public
+	 *	@param		string			$serviceName		Name of Service to call 
+	 *	@return		array								Parameters of Service
+	 */
+	public function getServiceParameters( $serviceName )
+	{
+		if( isset( $this->services['services'][$serviceName]['parameters'] ) )
+			return $this->services['services'][$serviceName]['parameters'];
+		return array();
+	}
 
 	/**
 	 *	Returns Roles having Access to Service.
@@ -383,42 +378,6 @@ class ENS_Point implements ENS_Interface_Point
 	public function getServices()
 	{
 		return array_keys( $this->services['services'] );
-	}
-	
-	/**
-	 *	Returns Array for preferred Service Examples.
-	 *	@access		public
-	 *	@return		array								Array for preferred Service Examples
-	 *	@deprecated	should not be used
-	 */
-	public function getServiceExamples()
-	{
-		$list	= array();
-		foreach( $this->services['services'] as $serviceName => $serviceData )
-		{
-			if( isset( $serviceData['preferred'] ) )
-			{
-				$list[]	= array(
-					'service'		=> $serviceName,
-					'format'		=> $serviceData['preferred'],
-					'description'	=> $serviceData['description']
-				);
-			}
-		}
-		return $list;
-	}
-	
-	/**
-	 *	Returns available Formats of Service.
-	 *	@access		public
-	 *	@param		string			$serviceName		Name of Service to call 
-	 *	@return		array								Parameters of Service
-	 */
-	public function getServiceParameters( $serviceName )
-	{
-		if( isset( $this->services['services'][$serviceName]['parameters'] ) )
-			return $this->services['services'][$serviceName]['parameters'];
-		return array();
 	}
 
 	/**
@@ -446,6 +405,8 @@ class ENS_Point implements ENS_Interface_Point
 	 *	@access		protected
 	 *	@param		string			$className			Class Name of Class to load
 	 *	@return		bool
+	 *	@deprecated	use an autoloader instead, will be removed in 0.2.0
+	 *	@todo		remove in 0.2.0
 	 */
 	protected function loadServiceClass( $className )
 	{
@@ -458,13 +419,45 @@ class ENS_Point implements ENS_Interface_Point
 	 *	@param		string			$fileName			Service Definition File Name
 	 *	@param		string			$cacheFile			Service Definition Cache File Name
 	 *	@return		void
+	 *	@deprecated	use an autoloader instead, will be removed in 0.2.0
+	 *	@todo		remove in 0.2.0
 	 */
 	protected function loadServices( $fileName, $cacheFile = NULL )
 	{
-		if( self::$loaderClass == $this->defaultLoader )
-			import( 'de.ceus-media.net.service.definition.Loader' );
 		$this->loader	= new self::$loaderClass;
 		$this->services	= $this->loader->loadServices( $fileName, $cacheFile );
+	}
+
+	/**
+	 *	Indicates whether a Service is available by its name.
+	 *	@access		public
+	 *	@param		string			$serviceName		Name of Service to check
+	 *	@return		boolean
+	 */
+	public function hasService( $serviceName )
+	{
+		return in_array( $serviceName, $this->getServices() );
+	}
+
+	protected function realizeParameterType( $value, $type )
+	{
+		switch( $type )
+		{
+			case 'array':
+				if( is_string( $value ) )
+					$value	= parse_str( $value );
+				break;
+			case 'int':
+			case 'integer':
+			case 'float':
+			case 'double':
+			case 'real':
+			case 'bool':
+			case 'boolean':
+				settype( $value, $type );
+				break;
+		}
+		return $value;
 	}
 }
 ?>
