@@ -40,7 +40,7 @@
  *	@since			0.6.3
  *	@version		$Id: Loader.php5 667 2010-05-18 15:16:09Z christian.wuerker $
  */
-class ENS_Definition_Loader
+class CMM_ENS_Definition_Loader
 {
 	/**	@var		array			$sourceTypes		Array of supported Source Types / Definition File Extensions */	
 	protected $sourceTypes	= array(
@@ -55,7 +55,7 @@ class ENS_Definition_Loader
 	 *	@access		protected
 	 *	@param		string				$fileName			Service Definition File Name
 	 *	@param		string				$cacheFile			Service Definition Cache File Name
-	 *	@return		void
+	 *	@return		array
 	 */
 	public function loadServices( $fileName, $cacheFile = NULL )
 	{
@@ -71,6 +71,7 @@ class ENS_Definition_Loader
 			throw new InvalidArgumentException( 'Defintion Source Type "'.$ext.'" is not supported (only '.implode( ", ", $types ).').' );
 
 		$method		= $this->sourceTypes[$ext];
+		$factory	= new Alg_Object_MethodFactory;
 		$services	= $this->$method( $fileName, $cacheFile );
 		if( $cacheFile )
 			file_put_contents( $cacheFile, serialize( $services ) );
@@ -101,7 +102,7 @@ class ENS_Definition_Loader
 	protected function loadServicesFromXml( $fileName )
 	{
 		import( 'de.ceus-media.net.service.definition.XmlReader' );
-		$definition	= ENS_Definition_XmlReader::load( $fileName );
+		$definition	= CMM_ENS_Definition_XmlReader::load( $fileName );
 		$this->completeDefinition( $definition );
 		return $definition;
 	}

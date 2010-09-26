@@ -40,7 +40,7 @@
  *	@version		$Id: Decoder.php5 667 2010-05-18 15:16:09Z christian.wuerker $
  *	@todo			fix: not reproducable errors using gzuncompress on format 'txt'
  */
-class ENS_Decoder
+class CMM_ENS_Decoder
 {
 	/**	@var		array		$compressionTypes	List of supported Compression Types */
 	protected $compressionTypes	= array(
@@ -176,18 +176,17 @@ class ENS_Decoder
 	{
 		if( !array_key_exists( $type, $this->compressionTypes ) )
 		{
-			if( $fallback )
-				$type	= array_shift( array_keys( $this->compressionTypes ) );
-			else
-				throw new InvalidArgumentException( 'Decompression Method "'.$type.'" is not supported.' );
+			if( !$fallback )
+				throw new InvalidArgumentException( 'Decompression method "'.$type.'" is not supported' );
+			$type	= array_shift( array_keys( $this->compressionTypes ) );
 		}
-		ob_start();
-		$method		= $this->compressionTypes[$type];							//  get Name of Method to decompress Response Content
-		$result		= $this->$method( $content );								//  call Method to decompress Response Content
-		$output		= ob_get_clean();											//  close Buffer for PHP Error Messages
-		if( $result === FALSE && $output )										//  could not decompress
-			throw new RuntimeException( $output );								//  throw Exception and carry Error Message 
-		return $result;															//  return decompressed Response Content
+		$method		= $this->compressionTypes[$type];												//  get name of method to decompress response content
+		ob_start();																					//  open a output buffer
+		$result		= $this->$method( $content );													//  call method to decompress response content
+		$output		= ob_get_clean();																//  close buffer for PHP error messages
+		if( $result === FALSE && $output )															//  could not decompress
+			throw new RuntimeException( $output )					;								//  throw exception and carry error message 
+		return $result;																				//  return decompressed response Content
 	}
 
 	/**
@@ -198,32 +197,20 @@ class ENS_Decoder
 	 */
 	protected function gzipDecode( $data )
 	{
-		if( function_exists( 'gzdecode' ) )
+		if( function_exists( 'gzdecode' ) )															//  if PHP method has been released
+			$data	= @gzdecode( $data );															//  use it to decompress the data
+		else																						//  otherwise: own implementation
 		{
-			$data	= @gzdecode( $data );
+			$tmp	= tempnam( '/tmp', 'ENS' );														//  create temporary file
+			@file_put_contents( $tmp, $data );														//  store gzipped data
+			ob_start();																				//  open output buffer
+			readgzfile( $tmp );																		//  read the gzip file to std output
+			@unlink( $tmp );
+			$data	= ob_get_clean();																//  get decompressed data from output buffer
 		}
-		else
-		{
-			$flags	= ord( substr( $data, 3, 1 ) );
-			$headerlen		= 10;
-			$extralen		= 0;
-			if( $flags & 4 )
-			{
-				$extralen	= unpack( 'v' ,substr( $data, 10, 2 ) );
-				$extralen	= $extralen[1];
-				$headerlen	+= 2 + $extralen;
-			}
-			if( $flags & 8 ) 												// Filename
-				$headerlen = strpos( $data, chr( 0 ), $headerlen ) + 1;
-			if( $flags & 16 )												// Comment
-				$headerlen = strpos( $data, chr( 0 ), $headerlen ) + 1;
-			if( $flags & 2 )												// CRC at end of file
-				$headerlen	+= 2;
-			$data	= @gzinflate( substr( $data, $headerlen ) );
-		}
-		if( FALSE == $data )
-			throw new RuntimeException( "Data not decompressable with gzdecode." );
-		return $data;
+		if( FALSE === $data )																		//  gzencode could decompress
+			throw new RuntimeException( 'Data not decompressable with gzdecode' );					//  throw exception
+		return $data;																				//  return decompressed data
 	}
 	
 	/**

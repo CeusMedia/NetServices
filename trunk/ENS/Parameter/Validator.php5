@@ -38,7 +38,7 @@
  *	@version		$Id: Validator.php5 667 2010-05-18 15:16:09Z christian.wuerker $
  *	@todo			Code Doc
  */
-class ENS_Parameter_Validator
+class CMM_ENS_Parameter_Validator
 {
 	/**
 	 *	Validates a Parameter Value from Request by calling Validator Methods for Parameter Rules and throwing Exceptions.
@@ -66,26 +66,30 @@ class ENS_Parameter_Validator
 		}
 		catch( InvalidArgumentException $e )
 		{
+			if( $ruleName == 'preg' )
+				$ruleName	.= ': '.$ruleValue;
 			throw new InvalidArgumentException( $ruleName );
 		}
 	}
 	
 	/**
-	 *	Calls Validator Method and throws Exception if Validation failed.
+	 *	Calls validator method and throws exception if validation failed.
 	 *	@access		protected
 	 *	@static
-	 *	@param		string		$method			Validation Method to call
+	 *	@param		string		$method			Validation method to call
 	 *	@param		string		$value			Value to validate
 	 *	@param		string		$measure		Measure to validate against
-	 *	@return		bool
+	 *	@return		void
 	 */
 	protected static function callMethod( $method, $value, $measure = NULL )
 	{
 		if( !method_exists( __CLASS__, $method ) )
-			throw new BadMethodCallException( "Service Parameter Validator Method '".$method."' is not existing." );
+		{
+			$message	= 'Service parameter validator method "'.$method.'" is not existing';
+			throw new BadMethodCallException( $message );
+		}
 		if( !self::$method( $value, $measure ) )
 			throw new InvalidArgumentException( $method );
-		return true;
 	}
 	
 	/**
@@ -151,10 +155,10 @@ class ENS_Parameter_Validator
 	 *	@access		protected
 	 *	@static
 	 *	@param		string		$value			Value to validate
-	 *	@return		bool
+	 *	@return		boolean
 	 */
 	protected static function checkType( $value, $measure )
-	{
+	{	
 		$type	= gettype( $value );
 		if( $type == $measure )
 			return TRUE;
@@ -165,11 +169,12 @@ class ENS_Parameter_Validator
 			case 'boolean':
 				return (bool) $copy == $value;
 			case 'int':
+			case 'integer':
 				return (int) $copy == $value;
-			case 'float':
-				return (float) $copy == $value;
 			case 'double':
-				return (double) $copy == $value;
+			case 'float':
+			case 'real':
+				return (float) $copy == $value;
 			case 'string':
 				return (string) $copy == $value;
 			case 'array':

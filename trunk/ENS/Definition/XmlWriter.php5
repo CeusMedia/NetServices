@@ -41,7 +41,7 @@
  *	@since			0.6.3
  *	@version		$Id: XmlWriter.php5 726 2010-07-27 09:35:16Z christian.wuerker $
  */
-class ENS_Definition_XmlWriter
+class CMM_ENS_Definition_XmlWriter
 {
 	/**
 	 *	Builds Service Definition Array statically and returns XML Service Definition String.

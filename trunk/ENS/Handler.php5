@@ -30,7 +30,7 @@
  *	Service Handlers for HTTP Requests.
  *	@category		cmModules
  *	@package		ENS
- *	@extends		ENS_Response
+ *	@extends		CMM_ENS_Response
  *	@uses			Net_HTTP_Request_Response
  *	@uses			UI_HTML_Exception_TraceViewer
  *	@author			Christian Würker <christian.wuerker@ceusmedia.de>
@@ -40,7 +40,7 @@
  *	@since			0.6.3
  *	@version		$Id: Handler.php5 667 2010-05-18 15:16:09Z christian.wuerker $
  */
-class ENS_Handler extends ENS_Response
+class CMM_ENS_Handler extends CMM_ENS_Response
 {
 	/**	@var		string		$charset				Character Set of Response */
 	public $charset	= "utf-8";		
@@ -65,11 +65,11 @@ class ENS_Handler extends ENS_Response
 
 	/**
 	 *	Constructor.
-	 *	@param		ENS_Point	$servicePoint		Services Class
+	 *	@param		CMM_ENS_Point	$servicePoint		Services Class
 	 *	@param		array				$availableFormats	Available Response Formats
 	 *	@return		void
 	 */
-	public function __construct( ENS_Point $servicePoint, $availableFormats = NULL )
+	public function __construct( CMM_ENS_Point $servicePoint, $availableFormats = NULL )
 	{
 		if( !$availableFormats )
 			$availableFormats	= $servicePoint->getAllFormats();
@@ -129,7 +129,6 @@ class ENS_Handler extends ENS_Response
 					$requestData[$parameters[$i]]	= $arguments[$i];
 				unset( $requestData['argumentsGivenByServiceCaller'] );
 			}
-			
 			$response	= $this->servicePoint->callService( $service, $format, $requestData );
 			$errors		= ob_get_clean();
 			if( trim( $errors ) )
@@ -182,13 +181,15 @@ class ENS_Handler extends ENS_Response
 			$format = 'html';
 		//  --  CONTENT TYPE  --  //
 		if( !array_key_exists( $format, $this->contentTypes ) )
-			throw new InvalidArgumentException( 'Content Type for Response Format "'.$format.'" is not defined' );
+			throw new InvalidArgumentException( 'MIME type for response format "'.$format.'" is not defined' );
 		$contentType	= $this->contentTypes[$format];
 		if( $this->charset )
 			$contentType	.= "; charset=".$this->charset;
 
 		//  --  COMPRESS CONTENT  --  //
-		$compression	= isset( $requestData['compressResponse'] ) ? strtolower( $requestData['compressResponse'] ) : "";
+		$compression	= NULL;
+		if( isset( $requestData['compressResponse'] ) )
+			$compression	= strtolower( $requestData['compressResponse'] );
 		if( $compression )
 		{
 			if( !in_array( $compression, $this->compressionTypes ) )
@@ -203,7 +204,7 @@ class ENS_Handler extends ENS_Response
 		$response->addHeader( 'Cache-Control', "no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0" );
 		$response->addHeader( 'Pragma', "no-cache" );
 		$response->addHeader( 'Content-Type', $contentType );
-#		$response->addHeader( 'Content-Length', strlen( $content ) );
+		$response->addHeader( 'Content-Length', strlen( $content ) );								//  this made problems in the past - disable if needed
 
 		if( $compression )
 			$response->addHeader( 'Content-Encoding', $compression );

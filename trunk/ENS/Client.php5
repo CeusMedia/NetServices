@@ -39,7 +39,7 @@
  *	@since			0.6.4
  *	@version		$Id: Client.php5 750 2010-09-06 14:53:37Z christian.wuerker $
  */
-class ENS_Client
+class CMM_ENS_Client
 {
 	/**	@var		string		$id					ID of Service Request Client */
 	protected $id;
@@ -65,7 +65,7 @@ class ENS_Client
 		'traffic'	=> 0,
 		'time'		=> 0,
 	);
-	/**	@var		ENS_Decoder	$decoder	Response Decoder Object */	
+	/**	@var		CMM_ENS_Decoder	$decoder	Response Decoder Object */	
 	protected $decoder;
 
 	/**
@@ -76,14 +76,14 @@ class ENS_Client
 	 *	@param		string		$decoderClass		Name of Class with Methods to decompress and decode Response
 	 *	@return		void
 	 */
-	public function __construct( $hostUrl = NULL, $logFile = NULL, $decoderClass = "ENS_Decoder" )
+	public function __construct( $hostUrl = NULL, $logFile = NULL, $decoderClass = "CMM_ENS_Decoder" )
 	{
 		$this->id	= md5( uniqid( rand(), true ) );
 		if( $hostUrl )
 			$this->setHostAddress( $hostUrl );
 		if( $logFile )
 			$this->setLogFile( $logFile );
-		$this->decoder	= new $decoderClass;
+		$this->decoder	= Alg_Object_Factory::createObject( $decoderClass );
 	}
 
 	/**
@@ -109,10 +109,16 @@ class ENS_Client
 		if( !in_array( $code, array( '200', '304' ) ) )
 			throw new RuntimeException( 'URL "'.$request->getOption( CURLOPT_URL ).'" can not be accessed (HTTP Code '.$code.').', $code );
 
-		if( array_key_exists( 'Content-Encoding', $response['headers'] ) )
+
+		$headers	= array();
+		foreach( $response['headers'] as $key => $values )
+			$headers[strtolower( $key )]	= array_pop( $values );
+		
+
+		if( array_key_exists( 'content-encoding', $headers ) )
 		{
-			$compression	= $response['headers']['Content-Encoding'][0];
-			$response['content']	= $this->decoder->decompressResponse( $response['content'], $compression  );
+			$method	= $headers['content-encoding'];
+			$response['content']	= $this->decoder->decompressResponse( $response['content'], $method );
 		}
 		return $response;
 	}
@@ -128,18 +134,17 @@ class ENS_Client
 	 */
 	public function get( $service, $format = NULL, $parameters = array(), $verbose = FALSE )
 	{
-		import( 'de.ceus-media.net.cURL' );
-		import( 'de.ceus-media.Alg_Time_Clock' );
-		$baseUrl	= $this->host."?service=".$service."&format=".$format;
+		$baseUrl	= $this->host.$service."?format=".$format;
 		$compress	= isset( $parameters['compressResponse'] ) ? strtolower( $parameters['compressResponse'] ) : "";
-		$parameters	= array_merge( $parameters, array( 'clientRequestSessionId' => $this->id ) );
+
+		$parameters['clientRequestSessionId']	= $this->id;
 		$parameters	= "&".http_build_query( $parameters, '', '&' );
 		$serviceUrl	= $baseUrl.$parameters;
 		if( $verbose )
 			remark( "GET: ".$serviceUrl );
 
 		$clock		= new Alg_Time_Clock;
-		$request	= new Net_cURL( $serviceUrl );
+		$request	= new Net_CURL( $serviceUrl );
 		$response	= $this->executeRequest( $request, $compress );
 		if( $this->logFile )
 		{

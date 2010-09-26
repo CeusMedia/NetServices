@@ -33,8 +33,8 @@
  *	@category		cmModules
  *	@package		ENS
  *	@uses			Net_HTTP_Request_Receiver
- *	@uses			ENS_Point
- *	@uses			ENS_Handler
+ *	@uses			CMM_ENS_Point
+ *	@uses			CMM_ENS_Handler
  *	@uses			UI_HTML_Service_Index
  *	@uses			UI_HTML_Service_Test
  *	@author			Christian Würker <christian.wuerker@ceusmedia.de>
@@ -44,7 +44,7 @@
  *	@since			0.6.5
  *	@version		$Id: Server.php5 667 2010-05-18 15:16:09Z christian.wuerker $
  */
-class ENS_Server
+class CMM_ENS_Server
 {
 	/**	@var		array			$formats		Available Service Formats, can be overwritten */
 	protected $formats					= array(
@@ -133,14 +133,14 @@ class ENS_Server
 	/**
 	 *	Loads Service Point Class and builds Instance, can be overwritten.
 	 *	@access		protected
-	 *	@return		ENS_Point
+	 *	@return		CMM_ENS_Point
 	 */
 	protected function loadServicePoint()
 	{
 		import( 'de.ceus-media.net.service.Point' );									//  load Standard Service Point Class
 		$fileName	= $this->basePath.$this->pointPath.$this->fileName;					//  File Path of Service Definition
 		$fileCache	= $this->basePath.$this->pointPath.$this->cacheFile;				//  File Path of Service Definition Cache File
-		$this->servicePoint	= new ENS_Point( $fileName, $fileCache );			//  start Service Point
+		$this->servicePoint	= new CMM_ENS_Point( $fileName, $fileCache );			//  start Service Point
 	}
 	
 	/**
@@ -165,7 +165,7 @@ class ENS_Server
 	protected function runService( $requestHandler )
 	{
 		import( 'de.ceus-media.net.service.Handler' );
-		$handler	= new ENS_Handler( $this->servicePoint, $this->formats );
+		$handler	= new CMM_ENS_Handler( $this->servicePoint, $this->formats );
 		return $handler->handle( $requestHandler );
 	}
 

@@ -29,8 +29,8 @@
 /**
  *	@category		cmModules
  *	@package		ENS
- *	@uses			ENS_Client
- *	@uses			ENS_Decoder
+ *	@uses			CMM_ENS_Client
+ *	@uses			CMM_ENS_Decoder
  *	@uses			Alg_Time_Clock
  *	@author			Christian Würker <christian.wuerker@ceusmedia.de>
  *	@copyright		2007-2010 Christian Würker
@@ -40,7 +40,7 @@
  *	@version		$Id: Caller.php5 741 2010-08-18 21:01:48Z christian.wuerker $
  *	@todo			Unit Test
  */
-class ENS_Caller
+class CMM_ENS_Caller
 {
 	/**	@var		array		$calls		Array of called Services with Response */
 	protected $calls	= array();
@@ -53,7 +53,7 @@ class ENS_Caller
 	 */
 	public function __construct( $url )
 	{
-		$this->client	= new ENS_Client( $url );
+		$this->client	= new CMM_ENS_Client( $url );
 	}
 
 	/**

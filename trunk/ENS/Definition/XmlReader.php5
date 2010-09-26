@@ -38,7 +38,7 @@
  *	@since			0.6.3
  *	@version		$Id: XmlReader.php5 699 2010-07-15 16:54:13Z christian.wuerker $
  */
-class ENS_Definition_XmlReader
+class CMM_ENS_Definition_XmlReader
 {
 	/**
 	 *	Parses XML Service Definition statically and returns Service Data Array.
