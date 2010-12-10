@@ -102,25 +102,24 @@ class CMM_ENS_Client
 		if( $this->username )
 			$request->setOption( CURLOPT_USERPWD, $this->username.":".$this->password );
 		$response['content']	= $request->exec();
-		$response['status']		= $request->getStatus();
+		$response['info']		= $request->getInfo();
 		$response['headers']	= $request->getHeader();
 	
-		$code		= $request->getStatus( Net_CURL::STATUS_HTTP_CODE );
-		if( !in_array( $code, array( '200', '304' ) ) )
+		$code		= $request->getInfo( Net_CURL::STATUS_HTTP_CODE );								//  get HTTP return status code
+		if( !in_array( $code, array( '200', '304' ) ) )												//  request failed
 			throw new RuntimeException( 'URL "'.$request->getOption( CURLOPT_URL ).'" can not be accessed (HTTP Code '.$code.').', $code );
 
-
-		$headers	= array();
-		foreach( $response['headers'] as $key => $values )
-			$headers[strtolower( $key )]	= array_pop( $values );
+		$headers	= array();																		//  since delivered headers are case sensitive
+		foreach( $response['headers'] as $key => $values )											//  and can contain several values, we need to iterate them
+			$headers[strtolower( $key )]	= array_pop( $values );									//  to lowercase the keyand grab only the last value entry
 		
-
-		if( array_key_exists( 'content-encoding', $headers ) )
+		if( array_key_exists( 'content-encoding', $headers ) )										//  compression header is set
 		{
-			$method	= $headers['content-encoding'];
-			$response['content']	= $this->decoder->decompressResponse( $response['content'], $method );
+			$content	= $response['content'];														//  get compressed content
+			$method		= $headers['content-encoding'];												//  get used compression method
+			$response['content']	= $this->decoder->decompressResponse( $content, $method );		//  decompress content
 		}
-		return $response;
+		return $response;																			//  return content
 	}
 
 	/**
@@ -195,7 +194,7 @@ class CMM_ENS_Client
 	 */
 	public function post( $service, $format = NULL, $data = array(), $verbose = FALSE )
 	{
-		$baseUrl	= $this->host."?service=".$service."&format=".$format;
+		$baseUrl	= $this->host.$service."?format=".$format;
 		if( $verbose )
 			remark( "POST: ".$baseUrl );
 
@@ -223,7 +222,7 @@ class CMM_ENS_Client
 			'url'		=> $baseUrl,
 			'data'		=> serialize( $data ),
 			'headers'	=> $response['headers'],
-			'status'	=> $response['status'],
+			'info'		=> $response['info'],
 			'response'	=> $response['content'],
 			'time'		=> $clock->stop(),
 			);

@@ -31,7 +31,8 @@
  *	@category		cmModules
  *	@package		ENS
  *	@extends		CMM_ENS_Response
- *	@uses			Net_HTTP_Request_Response
+ *	@uses			Net_HTTP_Response
+ *	@uses			Net_HTTP_Response_Sender
  *	@uses			UI_HTML_Exception_TraceViewer
  *	@author			Christian Würker <christian.wuerker@ceusmedia.de>
  *	@copyright		2007-2010 Christian Würker
@@ -133,7 +134,7 @@ class CMM_ENS_Handler extends CMM_ENS_Response
 			$errors		= ob_get_clean();
 			if( trim( $errors ) )
 				throw new RuntimeException( $errors );
-			return $this->sendResponse( $requestData, $response, $format );
+			return $this->sendResponse( $requestData, (string) $response, $format );
 		}
 		catch( Exception $e )
 		{
@@ -198,18 +199,18 @@ class CMM_ENS_Handler extends CMM_ENS_Response
 		}
 
 		//  --  BUILD RESPONSE  --  //
-		$response	= new Net_HTTP_Request_Response();
-		$response->write( $content );
-		$response->addHeader( 'Last-Modified', date( 'r' ) );
-		$response->addHeader( 'Cache-Control', "no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0" );
-		$response->addHeader( 'Pragma', "no-cache" );
-		$response->addHeader( 'Content-Type', $contentType );
-		$response->addHeader( 'Content-Length', strlen( $content ) );								//  this made problems in the past - disable if needed
+		$response	= new Net_HTTP_Response();
+		$response->setBody( $content );
+		$response->addHeaderPair( 'Last-Modified', date( 'r' ) );
+		$response->addHeaderPair( 'Cache-Control', "no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0" );
+		$response->addHeaderPair( 'Pragma', "no-cache" );
+		$response->addHeaderPair( 'Content-Type', $contentType );
+		$response->addHeaderPair( 'Content-Length', strlen( $content ) );								//  this made problems in the past - disable if needed
 
 		if( $compression )
-			$response->addHeader( 'Content-Encoding', $compression );
-		
-		return $response->send();
+			$response->addHeaderPair( 'Content-Encoding', $compression );
+		$sender	= new Net_HTTP_Response_Sender( $response );
+		return $sender->send();
 	}
 }
 ?>
