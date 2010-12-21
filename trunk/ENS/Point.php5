@@ -104,9 +104,9 @@ class CMM_ENS_Point implements CMM_ENS_Interface_Point
 			$names	= $this->services['services'][$serviceName]['parameters'];
 			foreach( $names as $name => $rules )
 			{
-				if( empty( $requestData[$name] ) )													//  no Value given by Request
+				if( !isset( $requestData[$name] ) )													//  no Value given by Request
 				{
-					$default	= empty( $rules['default'] ) ? NULL : $rules['default'];			//  get Default Value
+					$default	= !isset( $rules['default'] ) ? NULL : $rules['default'];			//  get Default Value
 					$value		= $default;
 				}
 				else
