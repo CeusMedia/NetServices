@@ -155,7 +155,7 @@ class CMM_ENS_Client
 			'method'	=> "GET",
 			'url'		=> $serviceUrl,
 			'headers'	=> $response['headers'],
-			'status'	=> $response['status'],
+			'info'		=> $response['info'],
 			'response'	=> $response['content'],
 			'time'		=> $clock->stop(),
 		);

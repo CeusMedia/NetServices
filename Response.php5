@@ -117,7 +117,7 @@ class CMM_ENS_Response
 				'file'		=> $content->getFile(),
 				'line'		=> $content->getLine(),
 				'trace'		=> $content->getTraceAsString(),
-				'serial'	=> $serial,
+				'serial'	=> base64_encode( $serial ),
 			);
 			$status	= "exception";
 		}
