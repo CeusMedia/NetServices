@@ -76,7 +76,7 @@ class CMM_ENS_Decoder
 		{
 			if( empty( $data['serial'] ) )										//  does not carry a serialized Exception
 				throw new Exception( $data['message'] );						//  forward Exception
-			$object	= unserialize( $data['serial'] );							//  try to unserialize carried Exception
+			$object	= unserialize( base64_decode( $data['serial'] ) );			//  try to unserialize carried Exception
 			if( $object instanceof __PHP_Incomplete_Class )
 			{
 				$name	= $object->__PHP_Incomplete_Class_Name;
