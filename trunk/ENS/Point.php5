@@ -226,7 +226,7 @@ class CMM_ENS_Point implements CMM_ENS_Interface_Point
 			catch( InvalidArgumentException $e )
 			{
 				$message	= 'Parameter "'.$name.'" for service "'.$serviceName.'" failed rule "'.$e->getMessage().'"';
-				throw new InvalidArgumentException( $message );			
+				throw new CMM_ENS_Parameter_Exception( $message );
 			}
 		}
 	}
