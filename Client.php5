@@ -209,7 +209,6 @@ class CMM_ENS_Client
 
 		$clock			= new Alg_Time_Clock;
 		$request	= new Net_CURL( $baseUrl );
-		remark( $baseUrl );
 		$request->setOption( CURLOPT_POST, TRUE );
 		$request->setOption( CURLOPT_POSTFIELDS, $data );
 		$response	= $this->executeRequest( $request );
