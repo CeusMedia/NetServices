@@ -106,9 +106,11 @@ class CMM_ENS_Client
 		$response['headers']	= $request->getHeader();
 	
 		$code		= $request->getInfo( Net_CURL::STATUS_HTTP_CODE );								//  get HTTP return status code
-		if( !in_array( $code, array( '200', '304' ) ) )												//  request failed
-			throw new RuntimeException( 'URL "'.$request->getOption( CURLOPT_URL ).'" can not be accessed (HTTP Code '.$code.').', $code );
-
+		if( !in_array( $code, array( '200', '304' ) ) ){											//  request failed
+			$url		= $request->getOption( CURLOPT_URL );										//  get service request URI
+			$resource	= preg_replace( '/&clientRequestSessionId='.$this->id.'$/', '', $url );		//  trim client ID
+			throw new Exception_IO( 'Service call HTTP request failed', $code, $resource );			//  throw IO exception with HTTP code and URI resource
+		}
 		$headers	= array();																		//  since delivered headers are case sensitive
 		foreach( $response['headers'] as $key => $values )											//  and can contain several values, we need to iterate them
 			$headers[strtolower( $key )]	= array_pop( $values );									//  to lowercase the keyand grab only the last value entry
@@ -153,7 +155,7 @@ class CMM_ENS_Client
 		
 		$this->requests[]	= array(
 			'method'	=> "GET",
-			'url'		=> $serviceUrl,
+			'url'		=> preg_replace( '/&clientRequestSessionId='.$this->id.'$/', '', $serviceUrl ),
 			'headers'	=> $response['headers'],
 			'info'		=> $response['info'],
 			'response'	=> $response['content'],
@@ -176,10 +178,17 @@ class CMM_ENS_Client
 	/**
 	 *	Returns noted Requests.
 	 *	@access		public
+	 *	@param		boolean		$latestOnly		Flag: return latest quest only
 	 *	@return		array
 	 */
-	public function getRequests()
+	public function getRequests( $latestOnly = FALSE )
 	{
+		if( $latestOnly ){
+			$number	= count( $this->requests );
+			if( !$number )
+				throw new RuntimeException( 'No services requested yet' );
+			return $this->requests[$number - 1];
+		}
 		return $this->requests;
 	}
 
