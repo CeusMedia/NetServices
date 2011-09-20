@@ -73,7 +73,7 @@ class CMM_ENS_Response
 					$this->addArrayToXmlNode( $child, $value, "items" );
 					continue;
 				}
-				$child	=& $xmlNode->addChild( $key );
+				$child	= $xmlNode->addChild( $key );
 				$this->addArrayToXmlNode( $child, $value, $key );
 				continue;
 			}
@@ -105,7 +105,9 @@ class CMM_ENS_Response
 				if( !( $content instanceof PDOException ) )
 					$serial		= serialize( $content );
 			}
-			catch( Exception $e ){}
+			catch( Exception $e ){
+//				return $this->buildResponseStructure( $e, 'exception' );
+			}
 
 			$content	= array(
 				'type'		=> get_class( $content ),
@@ -114,7 +116,7 @@ class CMM_ENS_Response
 				'file'		=> $content->getFile(),
 				'line'		=> $content->getLine(),
 				'trace'		=> $content->getTraceAsString(),
-				'serial'	=> base64_encode( $serial ),
+				'serial64'	=> base64_encode( $serial ),
 			);
 			$status	= "exception";
 		}
