@@ -24,7 +24,7 @@
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
  *	@link			http://code.google.com/p/cmmodules/
  *	@since			0.6.3
- *	@version		$Id: Point.php5 667 2010-05-18 15:16:09Z christian.wuerker $
+ *	@version		$Id$
  */
 /**
  *	Interface for Services.
@@ -35,7 +35,7 @@
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
  *	@link			http://code.google.com/p/cmmodules/
  *	@since			0.6.3
- *	@version		$Id: Point.php5 667 2010-05-18 15:16:09Z christian.wuerker $
+ *	@version		$Id$
  */
 interface CMM_ENS_Interface_Point
 {

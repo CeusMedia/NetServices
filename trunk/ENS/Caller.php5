@@ -24,7 +24,7 @@
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
  *	@link			http://code.google.com/p/cmmodules/
  *	@since			0.6.3
- *	@version		$Id: Caller.php5 741 2010-08-18 21:01:48Z christian.wuerker $
+ *	@version		$Id$
  */
 /**
  *	@category		cmModules
@@ -37,7 +37,7 @@
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
  *	@link			http://code.google.com/p/cmmodules/
  *	@since			0.6.3
- *	@version		$Id: Caller.php5 741 2010-08-18 21:01:48Z christian.wuerker $
+ *	@version		$Id$
  *	@todo			Unit Test
  */
 class CMM_ENS_Caller

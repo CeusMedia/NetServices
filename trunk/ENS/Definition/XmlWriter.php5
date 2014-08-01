@@ -24,7 +24,7 @@
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
  *	@link			http://code.google.com/p/cmmodules/
  *	@since			0.6.3
- *	@version		$Id: XmlWriter.php5 726 2010-07-27 09:35:16Z christian.wuerker $
+ *	@version		$Id$
  */
 /**
  *	Builder and Writer for XML Service Definitions.
@@ -39,7 +39,7 @@
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
  *	@link			http://code.google.com/p/cmmodules/
  *	@since			0.6.3
- *	@version		$Id: XmlWriter.php5 726 2010-07-27 09:35:16Z christian.wuerker $
+ *	@version		$Id$
  */
 class CMM_ENS_Definition_XmlWriter
 {
