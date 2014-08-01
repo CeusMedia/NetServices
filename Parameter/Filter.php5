@@ -24,7 +24,7 @@
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
  *	@link			http://code.google.com/p/cmmodules/
  *	@since			0.6.7
- *	@version		$Id: Filter.php5 667 2010-05-18 15:16:09Z christian.wuerker $
+ *	@version		$Id$
  */
 /**
  *	Filter for Service Parameters.
@@ -35,7 +35,7 @@
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
  *	@link			http://code.google.com/p/cmmodules/
  *	@since			0.6.7
- *	@version		$Id: Filter.php5 667 2010-05-18 15:16:09Z christian.wuerker $
+ *	@version		$Id$
  *	@todo			Code Doc
  */
 class CMM_ENS_Parameter_Filter

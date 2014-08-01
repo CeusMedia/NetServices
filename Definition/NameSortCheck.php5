@@ -24,7 +24,7 @@
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
  *	@link			http://code.google.com/p/cmmodules/
  *	@since			0.6.3
- *	@version		$Id: NameSortCheck.php5 667 2010-05-18 15:16:09Z christian.wuerker $
+ *	@version		$Id$
  */
 /**
  *	Checks order of Services in a Service Definition File (YAML and XML).
@@ -32,7 +32,7 @@
  *	@package		ENS.Definition
  *	@author			Christian Würker <christian.wuerker@ceusmedia.de>
  *	@since			0.6.3
- *	@version		$Id: NameSortCheck.php5 667 2010-05-18 15:16:09Z christian.wuerker $
+ *	@version		$Id$
  */
 class CMM_ENS_Definition_NameSortCheck
 {

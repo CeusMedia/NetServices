@@ -24,7 +24,7 @@
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
  *	@link			http://code.google.com/p/cmmodules/
  *	@since			0.6.4
- *	@version		$Id: Client.php5 750 2010-09-06 14:53:37Z christian.wuerker $
+ *	@version		$Id$
  */
 /**
  *	Client for interaction with Frontend Services.
@@ -37,7 +37,7 @@
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
  *	@link			http://code.google.com/p/cmmodules/
  *	@since			0.6.4
- *	@version		$Id: Client.php5 750 2010-09-06 14:53:37Z christian.wuerker $
+ *	@version		$Id$
  */
 class CMM_ENS_Client
 {

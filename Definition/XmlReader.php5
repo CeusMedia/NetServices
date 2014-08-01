@@ -24,7 +24,7 @@
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
  *	@link			http://code.google.com/p/cmmodules/
  *	@since			0.6.3
- *	@version		$Id: XmlReader.php5 699 2010-07-15 16:54:13Z christian.wuerker $
+ *	@version		$Id$
  */
 /**
  *	Parser and Reader for XML Service Definitions.
@@ -36,7 +36,7 @@
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
  *	@link			http://code.google.com/p/cmmodules/
  *	@since			0.6.3
- *	@version		$Id: XmlReader.php5 699 2010-07-15 16:54:13Z christian.wuerker $
+ *	@version		$Id$
  */
 class CMM_ENS_Definition_XmlReader
 {
