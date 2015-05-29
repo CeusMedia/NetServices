@@ -17,7 +17,7 @@
     "jabber": "ceus-media@jabber.org"
   },
   "require": {
-    "ceus-media/common": "dev-master"
+    "ceus-media/common": "@dev"
   },
   "autoload": {
     "psr-0": {
