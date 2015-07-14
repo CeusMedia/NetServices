@@ -16,12 +16,14 @@
     "email": "office@ceusmedia.de",
     "jabber": "ceus-media@jabber.org"
   },
+  "minimu-stability": "dev",
   "require": {
-    "ceus-media/common": "@dev"
+    "ceus-media/common": "@dev",
+    "ceus-media/bootstrap": "@dev"
   },
   "autoload": {
-    "psr-0": {
-      "": "src/"
+    "psr-4": {
+      "CeusMedia\\NetServices\\": "src/"
     }
   }
 }
