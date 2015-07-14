@@ -2,7 +2,7 @@
 /**
  *	Filter for Service Parameters.
  *
- *	Copyright (c) 2007-2010 Christian Würker (ceusmedia.de)
+ *	Copyright (c) 2007-2015 Christian Würker (ceusmedia.de)
  *
  *	This program is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
@@ -17,29 +17,26 @@
  *	You should have received a copy of the GNU General Public License
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- *	@category		cmModules
- *	@package		ENS.Parameter
+ *	@category		Library
+ *	@package		CeusMedia_NetServices_Parameter
  *	@author			Christian Würker <christian.wuerker@ceusmedia.de>
- *	@copyright		2007-2010 Christian Würker
+ *	@copyright		2007-2015 Christian Würker
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
- *	@link			http://code.google.com/p/cmmodules/
- *	@since			0.6.7
- *	@version		$Id$
+ *	@link			https://github.com/CeusMedia/NetServices
  */
+namespace CeusMedia\NetServices\Parameter;
 /**
  *	Filter for Service Parameters.
- *	@category		cmModules
- *	@package		ENS.Parameter
+ *	@category		Library
+ *	@package		CeusMedia_NetServices_Parameter
  *	@author			Christian Würker <christian.wuerker@ceusmedia.de>
- *	@copyright		2007-2010 Christian Würker
+ *	@copyright		2007-2015 Christian Würker
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
- *	@link			http://code.google.com/p/cmmodules/
- *	@since			0.6.7
- *	@version		$Id$
+ *	@link			https://github.com/CeusMedia/NetServices
  *	@todo			Code Doc
  */
-class CMM_ENS_Parameter_Filter
-{
+class Filter{
+
 	/**
 	 *	...
 	 *	@access		public
@@ -47,58 +44,49 @@ class CMM_ENS_Parameter_Filter
 	 *	@param		string		$value			Parameter Value from Request
 	 *	@return		void
 	 */
-	public function applyFilter( $filterKey, $parameterValue )
-	{
+	public function applyFilter( $filterKey, $parameterValue ){
 		if( !method_exists( __CLASS__, $filterKey ) )
-			throw new BadMethodCallException( 'Filter "'.$filterKey.'" is not existing' );
-		try
-		{
+			throw new \BadMethodCallException( 'Filter "'.$filterKey.'" is not existing' );
+		try{
 			return self::$filterKey( $parameterValue );
 		}
-		catch( Exception $e )
-		{
-			throw new InvalidArgumentException( $filterKey.': '.$e->getMessage() );
+		catch( \Exception $e ){
+			throw new \InvalidArgumentException( $filterKey.': '.$e->getMessage() );
 		}
 	}
-	
+
 	/**
 	 *	...
 	 *	@access		protected
 	 *	@param		string		$value			Value to validate
 	 *	@return		bool
 	 */
-	protected static function stripHtml( $value )
-	{
+	protected static function stripHtml( $value ){
 		return strip_tags( $value );
 	}
-	
-	protected static function decodeBase64( $value )
-	{
+
+	protected static function decodeBase64( $value ){
 		$code	= @base64_decode( $value, TRUE );
 		if( !$code )
-			throw new InvalidArgumentException( 'Could not decode Base64' );
+			throw new \InvalidArgumentException( 'Could not decode Base64' );
 		return $code;
 	}
-	
-	protected static function encodeBase64( $value )
-	{
+
+	protected static function encodeBase64( $value ){
 		return base64_encode( $value );
 	}
-	
-	protected static function encodeMD5( $value )
-	{
+
+	protected static function encodeMD5( $value ){
 		return md5( $value );
 	}
-	
-	protected static function test( $value )
-	{
+
+	protected static function test( $value ){
 		return $value." [tested]";
 	}
-		
-	protected static function trimString( $value )
-	{
+
+	protected static function trimString( $value ){
 		if( !is_string( $value ) )
-			throw new InvalidArgumentException( 'Must be string' );
+			throw new \InvalidArgumentException( 'Must be string' );
 		return trim( $value );
 	}
 }

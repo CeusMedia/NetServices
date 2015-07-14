@@ -2,7 +2,7 @@
 /**
  *	Basic Response Class for a Service.
  *
- *	Copyright (c) 2007-2010 Christian Würker (ceusmedia.de)
+ *	Copyright (c) 2007-2015 Christian Würker (ceusmedia.de)
  *
  *	This program is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
@@ -17,28 +17,25 @@
  *	You should have received a copy of the GNU General Public License
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- *	@category		cmModules
- *	@package		ENS
+ *	@category		Library
+ *	@package		CeusMedia_NetServices
  *	@author			Christian Würker <christian.wuerker@ceusmedia.de>
- *	@copyright		2007-2010 Christian Würker
+ *	@copyright		2007-2015 Christian Würker
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
- *	@link			http://code.google.com/p/cmmodules/
- *	@since			0.6.3
- *	@version		$Id$
+ *	@link			https://github.com/CeusMedia/NetServices
  */
+namespace CeusMedia\NetServices;
 /**
  *	Basic Response Class for a Service.
- *	@category		cmModules
- *	@package		ENS
+ *	@category		Library
+ *	@package		CeusMedia_NetServices
  *	@author			Christian Würker <christian.wuerker@ceusmedia.de>
- *	@copyright		2007-2010 Christian Würker
+ *	@copyright		2007-2015 Christian Würker
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
- *	@link			http://code.google.com/p/cmmodules/
- *	@since			0.6.3
- *	@version		$Id$
+ *	@link			https://github.com/CeusMedia/NetServices
  */
-class CMM_ENS_Response
-{
+class Response{
+
 	protected $clock	= NULL;
 
 	/**
@@ -46,9 +43,8 @@ class CMM_ENS_Response
 	 *	@access		public
 	 *	@return		void
 	 */
-	public function __construct()
-	{
-		$this->clock	= new Alg_Time_Clock;	
+	public function __construct(){
+		$this->clock	= new \Alg_Time_Clock;
 	}
 
 	/**
@@ -59,16 +55,12 @@ class CMM_ENS_Response
 	 *	@param		string			$lastParent		Recursion: Outer Node Name for Integer Values
 	 *	@return		void
 	 */
-	protected function addArrayToXmlNode( &$xmlNode, $dataArray, $lastParent = "" )
-	{
+	protected function addArrayToXmlNode( &$xmlNode, $dataArray, $lastParent = "" ){
 		if( !( is_string( $lastParent ) && $lastParent ) )
 			$lastParent	= "item";
-		foreach( $dataArray as $key => $value )
-		{
-			if( is_array( $value ) )
-			{
-				if( is_int( $key ) )
-				{
+		foreach( $dataArray as $key => $value ){
+			if( is_array( $value ) ){
+				if( is_int( $key ) ){
 					$child	=& $xmlNode->addChild( "set" );
 					$this->addArrayToXmlNode( $child, $value, "items" );
 					continue;
@@ -77,8 +69,7 @@ class CMM_ENS_Response
 				$this->addArrayToXmlNode( $child, $value, $key );
 				continue;
 			}
-			else if( is_int( $key ) )
-			{
+			else if( is_int( $key ) ){
 				if( $lastParent )
 					$key	= $this->getSingular( $lastParent );
 				else
@@ -87,7 +78,7 @@ class CMM_ENS_Response
 			$xmlNode->addChild( $key, str_replace( "&", "&amp;", $value ) );
 		}
 	}
-	
+
 	/**
 	 *	Builds Response Structure for every Format, containing Response Data Content, Status and more.
 	 *	@access		protected
@@ -95,13 +86,10 @@ class CMM_ENS_Response
 	 *	@param		string			$status			Status String, by default "data"
 	 *	@return 	array
 	 */
-	protected function buildResponseStructure( $content, $status )
-	{
-		if( $content instanceof Exception )
-		{
+	protected function buildResponseStructure( $content, $status ){
+		if( $content instanceof \Exception ){
 			$serial	= NULL;
-			try
-			{
+			try{
 				if( !( $content instanceof PDOException ) )
 					$serial		= serialize( $content );
 			}
@@ -125,7 +113,7 @@ class CMM_ENS_Response
 			'data'		=> $content,
 			'timestamp'	=> time(),
 			'duration'	=> $this->clock === NULL ? NULL : $this->clock->stop( 6, 0 ),
-		
+
 		);
 		return $structure;
 	}
@@ -139,25 +127,23 @@ class CMM_ENS_Response
 	 *	@return		string
 	 *	@throws		BadMethodCallException
 	 */
-	public function convertToOutputFormat( $content, $format, $status = "data" )
-	{
+	public function convertToOutputFormat( $content, $format, $status = "data" ){
 		$method	= "get".ucFirst( $format );
 		if( method_exists( $this, $method ) )
 			return $this->$method( $content, $status );
 		$message	= 'No method "'.$method.'" implemented for output format "'.$format.'".';
-		throw new BadMethodCallException( $message );
+		throw new \BadMethodCallException( $message );
 	}
-	
+
 	/**
 	 *	Return Content as Base64 String.
 	 *	@access		protected
 	 *	@param		string			$string			String to convert to Base64
 	 *	@return 	string
 	 */
-	protected function getBase64( $string )
-	{
+	protected function getBase64( $string ){
 		if( !is_string( $string ) )
-			throw new InvalidArgumentException( 'Base64 needs a string.' );
+			throw new \InvalidArgumentException( 'Base64 needs a string.' );
 		return base64_encode( $string );
 	}
 
@@ -168,10 +154,9 @@ class CMM_ENS_Response
 	 *	@param		string			$status			Status String, by default "data"
 	 *	@return 	string
 	 */
-	protected function getJson( $content, $status = "data" )
-	{
+	protected function getJson( $content, $status = "data" ){
 		$content	= $this->buildResponseStructure( $content, $status );
-		return json_encode( $content );		
+		return json_encode( $content );
 	}
 
 	/**
@@ -181,8 +166,7 @@ class CMM_ENS_Response
 	 *	@param		string			$status			Status String, by default "data"
 	 *	@return 	string
 	 */
-	protected function getPhp( $content, $status = "data" )
-	{
+	protected function getPhp( $content, $status = "data" ){
 		$content	= $this->buildResponseStructure( $content, $status );
 		return serialize( $content );
 	}
@@ -193,13 +177,12 @@ class CMM_ENS_Response
 	 *	@param		string			$words			Word in Plural
 	 *	@return		string
 	 */
-	protected function getSingular( $word )
-	{
+	protected function getSingular( $word ){
 		$word	= preg_replace( '@ies$@', "y", $word );
 		$word	= preg_replace( '@(([s|x|h])e)?s$@', "\\2", $word );
 		return $word;
 	}
-	
+
 	/**
 	 *	Return Content as WDDX String.
 	 *	@access		protected
@@ -207,9 +190,8 @@ class CMM_ENS_Response
 	 *	@param		string			$status			Status String, by default "data"
 	 *	@return 	string
 	 */
-	protected function getTxt( $content, $status = "data" )
-	{
-		if( $content instanceof Exception )
+	protected function getTxt( $content, $status = "data" ){
+		if( $content instanceof \Exception )
 			return $content->getMessage();
 		return (string) $content;
 	}
@@ -221,8 +203,7 @@ class CMM_ENS_Response
 	 *	@param		string			$status			Status String, by default "data"
 	 *	@return 	string
 	 */
-	protected function getWddx( $content, $status = "data" )
-	{
+	protected function getWddx( $content, $status = "data" ){
 		$content	= $this->buildResponseStructure( $content, $status );
 		return wddx_serialize_value( $content );
 	}
@@ -234,13 +215,12 @@ class CMM_ENS_Response
 	 *	@param		string			$status			Status String, by default "data"
 	 *	@return 	string
 	 */
-	protected function getXml( $content, $status = "data" )
-	{
+	protected function getXml( $content, $status = "data" ){
 		$data	= $this->buildResponseStructure( $content, $status );
-		$root	= new XML_Element( "<response/>" );
+		$root	= new \XML_Element( "<response/>" );
 		$this->addArrayToXmlNode( $root, $data, "item" );
 		$xml	= $root->asXml();
-		$xml	= XML_DOM_Formater::format( $xml );
+		$xml	= \XML_DOM_Formater::format( $xml );
 		return $xml;
 	}
 }

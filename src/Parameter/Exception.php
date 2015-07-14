@@ -1,5 +1,7 @@
 <?php
-class CMM_ENS_Parameter_Exception extends Exception implements Serializable
+namespace CeusMedia\NetServices\Parameter;
+
+class Exception extends \Exception implements \Serializable
 {
 
 	/**
@@ -7,8 +9,7 @@ class CMM_ENS_Parameter_Exception extends Exception implements Serializable
 	 *	@access		public
 	 *	@return		string
 	 */
-	public function serialize()
-	{
+	public function serialize(){
 		return serialize( array( $this->message, $this->code, $this->file, $this->line ) );
 	}
 
@@ -18,8 +19,7 @@ class CMM_ENS_Parameter_Exception extends Exception implements Serializable
 	 *	@param		string		$serial			Serial string of an validation exception
 	 *	@return		void
 	 */
-	public function unserialize( $serial )
-	{
+	public function unserialize( $serial ){
 		list( $this->message, $this->code, $this->file, $this->line ) = unserialize( $serial );
 	}
 }

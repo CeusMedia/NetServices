@@ -2,7 +2,7 @@
 /**
  *	Checks order of Services in a Service Definition File (YAML and XML).
  *
- *	Copyright (c) 2007-2010 Christian Würker (ceusmedia.de)
+ *	Copyright (c) 2007-2015 Christian Würker (ceusmedia.de)
  *
  *	This program is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
@@ -17,25 +17,25 @@
  *	You should have received a copy of the GNU General Public License
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- *	@category		cmModules
- *	@package		ENS.Definition
+ *	@category		Library
+ *	@package		CeusMedia_NetServices_Definition
  *	@author			Christian Würker <christian.wuerker@ceusmedia.de>
- *	@copyright		2007-2010 Christian Würker
+ *	@copyright		2007-2015 Christian Würker
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
- *	@link			http://code.google.com/p/cmmodules/
- *	@since			0.6.3
- *	@version		$Id$
+ *	@link			https://github.com/CeusMedia/NetServices
  */
+namespace CeusMedia\NetServices\Definition;
 /**
  *	Checks order of Services in a Service Definition File (YAML and XML).
- *	@category		cmModules
- *	@package		ENS.Definition
+ *	@category		Library
+ *	@package		CeusMedia_NetServices_Definition
  *	@author			Christian Würker <christian.wuerker@ceusmedia.de>
- *	@since			0.6.3
- *	@version		$Id$
+ *	@copyright		2007-2015 Christian Würker
+ *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
+ *	@link			https://github.com/CeusMedia/NetServices
  */
-class CMM_ENS_Definition_NameSortCheck
-{
+class NameSortCheck{
+
 	private $fileName		= "";
 	private $originalList	= array();
 	private $sortedList		= array();
@@ -47,10 +47,9 @@ class CMM_ENS_Definition_NameSortCheck
 	 *	@param		string		$fileName		URL of Service Definition File
 	 *	@return		void
 	 */
- 	public function __construct( $fileName )
-	{
+	public function __construct( $fileName ){
 		if( !file_exists( $fileName ) )
-			throw new RuntimeException( "File '".$fileName."' is not existing." );
+			throw new \RuntimeException( "File '".$fileName."' is not existing." );
 		$this->fileName	= $fileName;
 	}
 
@@ -59,26 +58,23 @@ class CMM_ENS_Definition_NameSortCheck
 	 *	@access		public
 	 *	@return		bool
 	 */
-	public function compare()
-	{
+	public function compare(){
 		$this->originalList	= array();
 		$this->compared		= TRUE;
 		$content	= file_get_contents( $this->fileName );
 		$info	= pathinfo( $this->fileName );
-		switch( $info['extension'] )
-		{
+		switch( $info['extension'] ){
 			case 'yaml':	$regEx	= "@^  ([a-z]+)[:]@i";
 							break;
 			case 'xml':		$regEx	= "@^\s*<service .*name=\"(\w+)\"@i";
 							$content	= preg_replace( "@<!--.*-->@u", "", $content );
 							break;
-			default:		throw new InvalidArgumentException( 'Extension "'.$info['extension'].'" is not supported.' );
+			default:		throw new \InvalidArgumentException( 'Extension "'.$info['extension'].'" is not supported.' );
 		}
-	
-	
+
+
 		$lines		= explode( "\n", $content );
-		foreach( $lines as $line )
-		{
+		foreach( $lines as $line ){
 			$matches	= array();
 			preg_match_all( $regEx, $line, $matches, PREG_SET_ORDER );
 			foreach( $matches as $match )
@@ -88,16 +84,15 @@ class CMM_ENS_Definition_NameSortCheck
 		natCaseSort( $this->sortedList );
 		return $this->sortedList === $this->originalList;
 	}
-	
+
 	/**
 	 *	Returns List of methods in original order.
 	 *	@access		public
 	 *	@return		array
 	 */
-	public function getOriginalList()
-	{
+	public function getOriginalList(){
 		if( !$this->compared )
-			throw new RuntimeException( "Not compared yet." );
+			throw new \RuntimeException( "Not compared yet." );
 		return $this->originalList;
 	}
 
@@ -106,10 +101,9 @@ class CMM_ENS_Definition_NameSortCheck
 	 *	@access		public
 	 *	@return		array
 	 */
-	public function getSortedList()
-	{
+	public function getSortedList(){
 		if( !$this->compared )
-			throw new RuntimeException( "Not compared yet." );
+			throw new \RuntimeException( "Not compared yet." );
 		return $this->sortedList;
 	}
 }

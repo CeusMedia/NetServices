@@ -2,7 +2,7 @@
 /**
  *	Service Handlers for HTTP Requests.
  *
- *	Copyright (c) 2007-2010 Christian Würker (ceusmedia.de)
+ *	Copyright (c) 2007-2015 Christian Würker (ceusmedia.de)
  *
  *	This program is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
@@ -17,33 +17,30 @@
  *	You should have received a copy of the GNU General Public License
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- *	@category		cmModules
- *	@package		ENS
+ *	@category		Library
+ *	@package		CeusMedia_NetServices
  *	@author			Christian Würker <christian.wuerker@ceusmedia.de>
- *	@copyright		2007-2010 Christian Würker
+ *	@copyright		2007-2015 Christian Würker
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
- *	@link			http://code.google.com/p/cmmodules/
- *	@since			0.6.3
- *	@version		$Id$
+ *	@link			https://github.com/CeusMedia/NetServices
  */
+namespace CeusMedia\NetServices;
 /**
  *	Service Handlers for HTTP Requests.
- *	@category		cmModules
- *	@package		ENS
- *	@extends		CMM_ENS_Response
- *	@uses			Net_HTTP_Response
- *	@uses			Net_HTTP_Response_Sender
+ *	@category		Library
+ *	@package		CeusMedia_NetServices
+ *	@extends		\CeusMedia\NetService\Response
+ *	@uses			\Net_HTTP_Response
+ *	@uses			\Net_HTTP_Response_Sender
  *	@author			Christian Würker <christian.wuerker@ceusmedia.de>
- *	@copyright		2007-2010 Christian Würker
+ *	@copyright		2007-2015 Christian Würker
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
- *	@link			http://code.google.com/p/cmmodules/
- *	@since			0.6.3
- *	@version		$Id$
+ *	@link			https://github.com/CeusMedia/NetServices
  */
-class CMM_ENS_Handler extends CMM_ENS_Response
+class Handler extends \CeusMedia\NetServices\Response
 {
 	/**	@var		string		$charset				Character Set of Response */
-	public $charset	= "utf-8";		
+	public $charset	= "utf-8";
 	/**	@var		array		$compressionTypes		List of supported Compression Types */
 	protected $compressionTypes	= array(
 		'deflate',
@@ -65,15 +62,14 @@ class CMM_ENS_Handler extends CMM_ENS_Response
 
 	/**
 	 *	Constructor.
-	 *	@param		CMM_ENS_Point	$servicePoint		Services Class
+	 *	@param		\CeusMedia\NetService\Point	$servicePoint		Services Class
 	 *	@param		array				$availableFormats	Available Response Formats
 	 *	@return		void
 	 */
-	public function __construct( CMM_ENS_Point $servicePoint, $availableFormats = NULL )
-	{
+	public function __construct( \CeusMedia\NetServices\Point $servicePoint, $availableFormats = NULL ){
 		if( !$availableFormats )
 			$availableFormats	= $servicePoint->getAllFormats();
-		
+
 		$this->servicePoint		= $servicePoint;
 		$this->availableFormats	= $availableFormats;
 	}
@@ -86,10 +82,8 @@ class CMM_ENS_Handler extends CMM_ENS_Response
 	 *	@param		string			$type			Compression Type
 	 *	@return		string
 	 */
-	protected static function compressResponse( $content, $type )
-	{
-		switch( $type )
-		{
+	protected static function compressResponse( $content, $type ){
+		switch( $type ){
 			case 'deflate':
 				$content	= gzcompress( $content );
 				break;
@@ -106,23 +100,20 @@ class CMM_ENS_Handler extends CMM_ENS_Response
 	 *	@param		array			$requestData			Request Array (or Object with ArrayAccess Interface)
 	 *	@return		int
 	 */
-	public function handle( $service, $requestData )
-	{
+	public function handle( $service, $requestData ){
 		if( empty( $service ) )
-			throw new InvalidArgumentException( 'No Service Name given' );
+			throw new \InvalidArgumentException( 'No Service Name given' );
 
 		//  --  CALL SERVICE  --  //
 		$format		= empty( $requestData['format'] ) ? NULL : $requestData['format'];
-		try
-		{
+		try{
 			$this->servicePoint->checkServiceDefinition( $service );
 			$formats	= $this->servicePoint->getServiceFormats( $service );
 			if( !in_array( $format, $formats ) )
 				$format	= $this->servicePoint->getDefaultServiceFormat( $service);
 			ob_start();
-			
-			if( isset( $requestData['argumentsGivenByServiceCaller'] ) )
-			{
+
+			if( isset( $requestData['argumentsGivenByServiceCaller'] ) ){
 				$parameters	= array_keys( $this->servicePoint->getServiceParameters( $service ) );
 				$arguments	= unserialize( stripslashes( $requestData['argumentsGivenByServiceCaller'] ) );
 				for( $i=0; $i<count( $arguments ); $i++ )
@@ -132,10 +123,10 @@ class CMM_ENS_Handler extends CMM_ENS_Response
 			$response	= $this->servicePoint->callService( $service, $format, $requestData );
 			$errors		= ob_get_clean();
 			if( trim( $errors ) )
-				throw new RuntimeException( $errors );
+				throw new \RuntimeException( $errors );
 			return $this->sendResponse( $requestData, (string) $response, $format );
 		}
-		catch( Exception $e )
+		catch( \Exception $e )
 		{
 			return $this->sendException( $requestData, $format, $e );
 		}
@@ -149,22 +140,17 @@ class CMM_ENS_Handler extends CMM_ENS_Response
 	 *	@param		Exception		$exception			Exception to encode
 	 *	@return		int
 	 */
-	protected function sendException( $requestData, $format, $exception )
-	{
-		try
-		{
+	protected function sendException( $requestData, $format, $exception ){
+		try{
 			$response	= $this->convertToOutputFormat( $exception, $format, "exception" );
 		}
-		catch( Exception $e )
-		{
+		catch( \Exception $e ){
 			$response	= $exception->getMessage();
 		}
-		try
-		{
+		try{
 			return $this->sendResponse( $requestData, $response, $format );
 		}
-		catch( Exception $e )
-		{
+		catch( \Exception $e ){
 			die( $e->getMessage() );
 		}
 	}
@@ -175,13 +161,12 @@ class CMM_ENS_Handler extends CMM_ENS_Response
 	 *	@param		string			$content		Content of Response
 	 *	@return		int
 	 */
-	protected function sendResponse( $requestData, $content, $format = NULL, $compressionType = NULL )
-	{
+	protected function sendResponse( $requestData, $content, $format = NULL, $compressionType = NULL ){
 		if( !$format )
 			$format = 'html';
 		//  --  CONTENT TYPE  --  //
 		if( !array_key_exists( $format, $this->contentTypes ) )
-			throw new InvalidArgumentException( 'MIME type for response format "'.$format.'" is not defined' );
+			throw new \InvalidArgumentException( 'MIME type for response format "'.$format.'" is not defined' );
 		$contentType	= $this->contentTypes[$format];
 		if( $this->charset )
 			$contentType	.= "; charset=".$this->charset;
@@ -190,25 +175,24 @@ class CMM_ENS_Handler extends CMM_ENS_Response
 		$compression	= NULL;
 		if( isset( $requestData['compressResponse'] ) )
 			$compression	= strtolower( $requestData['compressResponse'] );
-		if( $compression )
-		{
+		if( $compression ){
 			if( !in_array( $compression, $this->compressionTypes ) )
 				$compression	= $this->compressionTypes[0];
 			$content	= self::compressResponse( $content, $compression );
 		}
 
 		//  --  BUILD RESPONSE  --  //
-		$response	= new Net_HTTP_Response();
+		$response	= new \Net_HTTP_Response();
 		$response->setBody( $content );
 		$response->addHeaderPair( 'Last-Modified', date( 'r' ) );
 		$response->addHeaderPair( 'Cache-Control', "no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0" );
 		$response->addHeaderPair( 'Pragma', "no-cache" );
 		$response->addHeaderPair( 'Content-Type', $contentType );
-		$response->addHeaderPair( 'Content-Length', strlen( $content ) );								//  this made problems in the past - disable if needed
+//		$response->addHeaderPair( 'Content-Length', strlen( $content ) );								//  this made problems in the past - disable if needed
 
 		if( $compression )
 			$response->addHeaderPair( 'Content-Encoding', $compression );
-		$sender	= new Net_HTTP_Response_Sender( $response );
+		$sender	= new \Net_HTTP_Response_Sender( $response );
 		return $sender->send();
 	}
 }

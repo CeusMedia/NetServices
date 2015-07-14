@@ -2,7 +2,7 @@
 /**
  *	Parser and Reader for XML Service Definitions.
  *
- *	Copyright (c) 2007-2010 Christian Würker (ceusmedia.de)
+ *	Copyright (c) 2007-2015 Christian Würker (ceusmedia.de)
  *
  *	This program is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
@@ -17,29 +17,26 @@
  *	You should have received a copy of the GNU General Public License
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- *	@category		cmModules
- *	@package		ENS.Definition
+ *	@category		Library
+ *	@package		CeusMedia_NetServices_Definition
  *	@author			Christian Würker <christian.wuerker@ceusmedia.de>
- *	@copyright		2007-2010 Christian Würker
+ *	@copyright		2007-2015 Christian Würker
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
- *	@link			http://code.google.com/p/cmmodules/
- *	@since			0.6.3
- *	@version		$Id$
+ *	@link			https://github.com/CeusMedia/NetServices
  */
+namespace CeusMedia\NetServices\Definition;
 /**
  *	Parser and Reader for XML Service Definitions.
- *	@category		cmModules
- *	@package		ENS.Definition
+ *	@category		Library
+ *	@package		CeusMedia_NetServices_Definition
  *	@uses			XML_ElementReader
  *	@author			Christian Würker <christian.wuerker@ceusmedia.de>
- *	@copyright		2007-2010 Christian Würker
+ *	@copyright		2007-2015 Christian Würker
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
- *	@link			http://code.google.com/p/cmmodules/
- *	@since			0.6.3
- *	@version		$Id$
+ *	@link			https://github.com/CeusMedia/NetServices
  */
-class CMM_ENS_Definition_XmlReader
-{
+class XmlReader{
+
 	/**
 	 *	Parses XML Service Definition statically and returns Service Data Array.
 	 *	@access		public
@@ -48,12 +45,11 @@ class CMM_ENS_Definition_XmlReader
 	 *	@param		bool		$validate		Flag: validate against DTD
 	 *	@return		array
 	 */
-	public static function load( $fileName, $validate = FALSE )
-	{
+	public static function load( $fileName, $validate = FALSE ){
 		if( $validate )
 			self::validateFile( $fileName );
 
-		$element	= XML_ElementReader::readFile( $fileName );
+		$element	= \XML_ElementReader::readFile( $fileName );
 		$data		= self::readServicePoint( $element );
 		return $data;
 	}
@@ -66,8 +62,7 @@ class CMM_ENS_Definition_XmlReader
 	 *	@param		array		$services	Reference to Service Point Service List
 	 *	@return		void
 	 */
-	protected static function readService( $element, &$services )
-	{
+	protected static function readService( $element, &$services ){
 		$serviceName	= $element->getAttribute( 'name' );
 		$service		= array(
 			'class'			=> (string) $element->getAttribute( 'class' ),
@@ -96,10 +91,8 @@ class CMM_ENS_Definition_XmlReader
 	 *	@param		array		$service	Reference to Service Definition Array
 	 *	@return		void
 	 */
-	protected static function readServiceFilters( $element, &$service )
-	{
-		foreach( $element->filter as $filterElement )
-		{
+	protected static function readServiceFilters( $element, &$service ){
+		foreach( $element->filter as $filterElement ){
 			$key	= trim( (string) $filterElement );
 			if( !trim( $key ) )
 				continue;
@@ -118,8 +111,7 @@ class CMM_ENS_Definition_XmlReader
 	 *	@param		array		$service	Reference to Service Definition Array
 	 *	@return		void
 	 */
-	protected static function readServiceFormats( $element, &$service )
-	{
+	protected static function readServiceFormats( $element, &$service ){
 		foreach( $element->format as $formatElement )
 			$service['formats'][]	= strtolower( (string) $formatElement );
 	}
@@ -132,10 +124,8 @@ class CMM_ENS_Definition_XmlReader
 	 *	@param		array		$service	Reference to Service Definition Array
 	 *	@return		void
 	 */
-	protected static function readServiceParameters( $element, &$service )
-	{
-		foreach( $element->parameter as $parameterElement )
-		{
+	protected static function readServiceParameters( $element, &$service ){
+		foreach( $element->parameter as $parameterElement ){
 			$parameterName	= (string) $parameterElement;
 			$attributes		= array(
 				'mandatory'	=> NULL,
@@ -144,12 +134,10 @@ class CMM_ENS_Definition_XmlReader
 				'filters'	=> array(),
 				'title'		=> NULL,
 			);
-			foreach( $parameterElement->getAttributes() as $key => $value )
-			{
+			foreach( $parameterElement->getAttributes() as $key => $value ){
 				if( strtolower( $key ) == "mandatory" )
 					$attributes['mandatory']	= strtolower( $value ) == "yes" ? TRUE : FALSE;
-				else if( strtolower( $key ) == "filters" )
-				{
+				else if( strtolower( $key ) == "filters" ){
 					foreach( explode( ",", $value ) as $filter )
 						if( trim( $filter ) )
 							$attributes['filters'][]	= trim( $filter );
@@ -168,8 +156,7 @@ class CMM_ENS_Definition_XmlReader
 	 *	@param		XML_Element	$element	Service Point XML Element
 	 *	@return		array
 	 */
-	protected static function readServicePoint( $element )
-	{
+	protected static function readServicePoint( $element ){
 		$data	= array(
 			'title'			=> (string) $element->title,
 			'description'	=> (string) $element->description,
@@ -183,7 +170,7 @@ class CMM_ENS_Definition_XmlReader
 			self::readService( $serviceElement, $data['services'] );
 		return $data;
 	}
-	
+
 	/**
 	 *	Reads Service Roles in situ, can be overwritten.
 	 *	@access		protected
@@ -192,8 +179,7 @@ class CMM_ENS_Definition_XmlReader
 	 *	@param		array		$service	Reference to Service Definition Array
 	 *	@return		void
 	 */
-	protected static function readServiceRoles( $element, &$service )
-	{
+	protected static function readServiceRoles( $element, &$service ){
 		foreach( $element->role as $role )												//  iterate Roles
 			$service['roles'][] = (string) $role;										//  note Role
 	}
@@ -205,12 +191,11 @@ class CMM_ENS_Definition_XmlReader
 	 *	@param		string		$fileName	File Name of Service XML File.
 	 *	@return		void
 	 */
-	protected static function validateFile( $fileName )
-	{
-		$dom = new DOMDocument;
+	protected static function validateFile( $fileName ){
+		$dom = new \DOMDocument;
 		$dom->load( $fileName );
 		if( !@$dom->validate() )
-			throw new RuntimeException( 'Service XML File is not valid or no DTD given.' );
+			throw new \RuntimeException( 'Service XML File is not valid or no DTD given.' );
 	}
 }
 ?>

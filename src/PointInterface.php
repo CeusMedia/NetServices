@@ -2,7 +2,7 @@
 /**
  *	Interface for Services.
  *
- *	Copyright (c) 2007-2010 Christian Würker (ceusmedia.de)
+ *	Copyright (c) 2007-2015 Christian Würker (ceusmedia.de)
  *
  *	This program is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
@@ -17,50 +17,47 @@
  *	You should have received a copy of the GNU General Public License
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- *	@category		cmModules
- *	@package		ENS
+ *	@category		Library
+ *	@package		CeusMedia_NetServices_Interface
  *	@author			Christian Würker <christian.wuerker@ceusmedia.de>
- *	@copyright		2007-2010 Christian Würker
+ *	@copyright		2007-2015 Christian Würker
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
- *	@link			http://code.google.com/p/cmmodules/
- *	@since			0.6.3
- *	@version		$Id$
+ *	@link			https://github.com/CeusMedia/NetServices
  */
+namespace CeusMedia\NetServices;
 /**
  *	Interface for Services.
- *	@category		cmModules
- *	@package		ENS
+ *	@category		Library
+ *	@package		CeusMedia_NetServices_Interface
  *	@author			Christian Würker <christian.wuerker@ceusmedia.de>
- *	@copyright		2007-2010 Christian Würker
+ *	@copyright		2007-2015 Christian Würker
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
- *	@link			http://code.google.com/p/cmmodules/
- *	@since			0.6.3
- *	@version		$Id$
+ *	@link			https://github.com/CeusMedia/NetServices
  */
-interface CMM_ENS_Interface_Point
-{
+interface PointInterface{
+
 	/**
 	 *	Constructor Method.
 	 *	@access		public
-	 *	@param		string			$serviceName		Name of Service to call 
+	 *	@param		string			$serviceName		Name of Service to call
 	 *	@param		string			$responseFormat		Format of Service Response
 	 *	@param		array			$requestData		Array (or Object with ArrayAccess Interface) of Request Data
-	 *	@return		string			Response String of Service	
+	 *	@return		string			Response String of Service
 	 */
 	public function callService( $serviceName, $responseFormat = NULL, $requestData = NULL );
 
 	/**
 	 *	Returns Class of Service.
 	 *	@access		public
-	 *	@param		string			$serviceName		Name of Service to call 
+	 *	@param		string			$serviceName		Name of Service to call
 	 *	@return		string			Class of Service
 	 */
 	public function getServiceClass( $serviceName );
-	
+
 	/**
 	 *	Returns Description of Service.
 	 *	@access		public
-	 *	@param		string			$serviceName		Name of Service to call 
+	 *	@param		string			$serviceName		Name of Service to call
 	 *	@return		string			Description of Service
 	 */
 	public function getServiceDescription( $serviceName );
@@ -68,7 +65,7 @@ interface CMM_ENS_Interface_Point
 	/**
 	 *	Returns available Response Formats of Service.
 	 *	@access		public
-	 *	@param		string			$serviceName		Name of Service to call 
+	 *	@param		string			$serviceName		Name of Service to call
 	 *	@return		array			Response Formats of Service
 	 */
 	public function getServiceFormats( $serviceName );

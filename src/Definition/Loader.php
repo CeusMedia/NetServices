@@ -2,7 +2,7 @@
 /**
  *	Loader for Service Defintions in JSON, XML or YAML.
  *
- *	Copyright (c) 2007-2010 Christian Würker (ceusmedia.de)
+ *	Copyright (c) 2007-2015 Christian Würker (ceusmedia.de)
  *
  *	This program is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
@@ -17,39 +17,36 @@
  *	You should have received a copy of the GNU General Public License
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- *	@category		cmModules
- *	@package		ENS.Definition
+ *	@category		Library
+ *	@package		CeusMedia_NetServices_Definition
  *	@author			Christian Würker <christian.wuerker@ceusmedia.de>
- *	@copyright		2007-2010 Christian Würker
+ *	@copyright		2007-2015 Christian Würker
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
- *	@link			http://code.google.com/p/cmmodules/
- *	@since			0.6.3
- *	@version		$Id$
+ *	@link			https://github.com/CeusMedia/NetServices
  */
+namespace CeusMedia\NetServices\Definition;
 /**
  *	Loader for Service Defintions in JSON, XML or YAML.
- *	@category		cmModules
- *	@package		ENS.Definition
+ *	@category		Library
+ *	@package		CeusMedia_NetServices_Definition
  *	@uses			ADT_JSON_Converter
  *	@uses			Service_Definition_XmlReader
  *	@uses			File_Yaml_Reader
  *	@author			Christian Würker <christian.wuerker@ceusmedia.de>
- *	@copyright		2007-2010 Christian Würker
+ *	@copyright		2007-2015 Christian Würker
  *	@license		http://www.gnu.org/licenses/gpl-3.0.txt GPL 3
- *	@link			http://code.google.com/p/cmmodules/
- *	@since			0.6.3
- *	@version		$Id$
+ *	@link			https://github.com/CeusMedia/NetServices
  */
-class CMM_ENS_Definition_Loader
-{
-	/**	@var		array			$sourceTypes		Array of supported Source Types / Definition File Extensions */	
+class Loader{
+
+	/**	@var		array			$sourceTypes		Array of supported Source Types / Definition File Extensions */
 	protected $sourceTypes	= array(
 		'JS'	=> "loadServicesFromJson",
 		'JSON'	=> "loadServicesFromJson",
 		'XML'	=> "loadServicesFromXml",
 		'YAML'	=> "loadServicesFromYaml",
 	);
-		
+
 	/**
 	 *	Loads Service Definitions from XML or YAML File.
 	 *	@access		protected
@@ -57,10 +54,9 @@ class CMM_ENS_Definition_Loader
 	 *	@param		string				$cacheFile			Service Definition Cache File Name
 	 *	@return		array
 	 */
-	public function loadServices( $fileName, $cacheFile = NULL )
-	{
+	public function loadServices( $fileName, $cacheFile = NULL ){
 		if( !file_exists( $fileName ) )
-			throw new RuntimeException( 'Service Definition File "'.$fileName.'" is not existing.' );
+			throw new \RuntimeException( 'Service Definition File "'.$fileName.'" is not existing.' );
 		if( $cacheFile && filemtime( $fileName ) <= @filemtime( $cacheFile ) )
 			return $this->services	= unserialize( file_get_contents( $cacheFile ) );
 
@@ -68,26 +64,25 @@ class CMM_ENS_Definition_Loader
 		$ext	= strtoupper( $info['extension'] );
 		$types	= array_keys( $this->sourceTypes );
 		if( !in_array( $ext, $types ) )
-			throw new InvalidArgumentException( 'Defintion Source Type "'.$ext.'" is not supported (only '.implode( ", ", $types ).').' );
+			throw new \InvalidArgumentException( 'Defintion Source Type "'.$ext.'" is not supported (only '.implode( ", ", $types ).').' );
 
 		$method		= $this->sourceTypes[$ext];
-		$factory	= new Alg_Object_MethodFactory;
+		$factory	= new \Alg_Object_MethodFactory;
 		$services	= $this->$method( $fileName, $cacheFile );
 		if( $cacheFile )
 			file_put_contents( $cacheFile, serialize( $services ) );
 		return $services;
 	}
-	
+
 	/**
 	 *	Loads Service Definitions from XML File.
 	 *	@access		protected
 	 *	@param		string				$fileName			Service Definition File Name
 	 *	@return		void
 	 */
-	protected function loadServicesFromJson( $fileName )
-	{
+	protected function loadServicesFromJson( $fileName ){
 		$jsonString		= file_get_contents( $fileName );
-		$definition		= ADT_JSON_Converter::convertToArray( $jsonString );
+		$definition		= \ADT_JSON_Converter::convertToArray( $jsonString );
 		$this->completeDefinition( $definition );
 		return $definition;
 	}
@@ -98,9 +93,8 @@ class CMM_ENS_Definition_Loader
 	 *	@param		string				$fileName			Service Definition File Name
 	 *	@return		void
 	 */
-	protected function loadServicesFromXml( $fileName )
-	{
-		$definition	= CMM_ENS_Definition_XmlReader::load( $fileName );
+	protected function loadServicesFromXml( $fileName ){
+		$definition	= \CeusMedia\NetServices\Definition\XmlReader::load( $fileName );
 		$this->completeDefinition( $definition );
 		return $definition;
 	}
@@ -111,19 +105,16 @@ class CMM_ENS_Definition_Loader
 	 *	@param		string				$fileName			Service Definition File Name
 	 *	@return		void
 	 */
-	protected function loadServicesFromYaml( $fileName )
-	{
-		$definition	= File_YAML_Reader::load( $fileName );
+	protected function loadServicesFromYaml( $fileName ){
+		$definition	= \File_YAML_Reader::load( $fileName );
 		$this->completeDefinition( $definition );
 		return $definition;
-	}	
-	
-	protected function completeDefinition( &$definition )
-	{
+	}
+
+	protected function completeDefinition( &$definition ){
 		if( !isset( $definition['filters'] ) )
 			$definition['filters']	= array();
-		foreach( array_keys( $definition['services'] ) as $serviceName )
-		{
+		foreach( array_keys( $definition['services'] ) as $serviceName ){
 			$service	=& $definition['services'][$serviceName];
 			if( !isset( $service['description'] ) )
 				$definition['services'][$serviceName]['description']	= NULL;
@@ -131,10 +122,8 @@ class CMM_ENS_Definition_Loader
 				$definition['services'][$serviceName]['filters']	= array();
 			if( !isset( $service['parameters'] ) )
 				$definition['services'][$serviceName]['parameters']	= array();
-			else
-			{
-				foreach( $service['parameters'] as $parameterName => $parameterValue )
-				{
+			else{
+				foreach( $service['parameters'] as $parameterName => $parameterValue ){
 					$parameter	=& $service['parameters'][$parameterName];
 					if( !isset( $parameter['mandatory'] ) )
 						$parameter['mandatory']	= NULL;
