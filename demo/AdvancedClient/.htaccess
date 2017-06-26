@@ -1,0 +1,10 @@
+
+RewriteEngine on
+#RewriteBase /ceusmedia.de/demos/cmModules/ESA/SimpleDemo
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule (.*) ?path=$1&%{QUERY_STRING} [L]
+
+FileETag none
+#ExpiresActive on
+#ExpiresDefault "access plus 3 days"

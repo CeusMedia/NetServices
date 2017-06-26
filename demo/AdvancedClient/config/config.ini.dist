@@ -1,0 +1,7 @@
+path.css			= "css/"
+path.js				= "js/"
+path.css.lib		= "https://cdn.ceusmedia.de/css/"
+path.js.lib			= "https://cdn.ceusmedia.de/js/"
+
+auth.username		= ""
+auth.password		= ""

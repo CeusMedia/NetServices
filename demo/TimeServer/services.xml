@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<servicePoint>
+	<services>
+		<service name="time" class="TimeServices" format="txt">
+			<description>Returns current Timestamp on Server.</description>
+			<format>json</format>
+			<format>php</format>
+			<format>txt</format>
+			<format>wddx</format>
+			<format>xml</format>
+			<parameter mandatory="no" preg="@^([a-z_ .:-]+)?$@i">
+				output
+			</parameter>
+		</service>
+	</services>
+</servicePoint>

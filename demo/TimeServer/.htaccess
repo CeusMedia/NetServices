@@ -1,0 +1,5 @@
+FileETag none
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule (.*) ?___NetServicePath=$1&%{QUERY_STRING} [L]

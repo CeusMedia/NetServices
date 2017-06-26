@@ -1,0 +1,11 @@
+
+#def {
+	border: 1px solid gray;
+	overflow: auto;
+	}
+
+#result {
+	padding: 1em;
+	border: 1px solid gray;
+	background-color: #EEE;
+	}

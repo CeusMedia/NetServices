@@ -1,0 +1,170 @@
+/*  SERVICE TABLE  */
+#index #list {
+	clear: both;
+/*	padding: 1em;*/
+	}
+
+#index #list table {
+	border-collapse: collapse;
+/*	border-top: 5px solid #555555;*/
+	border: 1px solid #ddd;
+	border-top: 0px;
+	margin-bottom: 0.5em;
+	width: 100%;
+	border: 1px solid #ddd;
+	border-collapse: collapse;
+	}
+
+#index #list table caption {
+	background-color: #555555;
+/*	border-top: 5px solid #555555;
+	background-image: url(bar.png);*/
+	background-position: 0px -8px;
+	height: 20px;
+	border: 1px solid #ddd;
+	text-align: left;
+	width: 100%;
+	cursor: pointer;
+	}
+
+#index #list table caption span {
+	font-weight: bold;
+	font-size: 1.1em;
+	padding: 1px 0px 1px 5px;
+	color: #FFFFFF;
+	}
+
+#index #list table tr th {
+	background-color: #F7F7F7;
+	color: #3F3F3F;
+	padding: 2px 4px 2px 4px;
+	font-weight: normal;
+	font-size: 0.9em;
+	font-style: italic;
+	font-size: 1.1em;
+	}
+
+#index #list table tr th span.format-switch {
+	cursor: pointer;
+	text-decoration: underline;
+	}
+
+#index #list table tr td {
+	border-top: 1px solid #eee;
+/*	padding: 1px 4px 1px 4px;*/
+	border-bottom: 1px solid #DDD;
+/*	border-left: 1px dotted #ddd;*/
+	vertical-align: top;
+	}
+
+#index #list table tr.current td {
+	background: #DDD;
+	}
+
+#index #list table tr td.yes {
+	background: #dfd;
+	text-align: center;
+	height: 30px;
+	vertical-align: middle;
+	}
+
+#index #list table tr td.no {
+/*	background: #FEE;*/
+	text-align: center;
+	vertical-align: middle;
+	}
+
+#index #list table tr td.preferred {
+	border-width: 0px;
+	background: #bfb;
+	text-align: center;
+	vertical-align: middle;
+	}
+
+#index #list table tr:hover {
+	background: #EFE;
+	}
+
+#index #list table tr.clicked {
+	background: #FFD;
+	}
+
+#index #list table tr.clicked td {
+	}
+
+
+/*  SERVICE COLUMN  */
+#index #list table tr td.service {
+	padding: 2px;
+	}
+
+#index #list table tr td.service .className {
+	color: #444;
+	margin-right: 1em;
+	font-size: 0.9em;
+	background-color: #EEE;
+	background-image: url(../images/page_php.gif);
+	background-repeat: no-repeat;
+	background-position: 2px 0px;
+	border: 1px solid #999;
+	-moz-border-radius: 0.3em;
+	padding: 1px 4px 1px 20px;
+	display: none;
+	}
+
+#index #list table tr td.service .serviceName {
+	float: left;
+	font-weight: bold;
+	padding: 0.2em;
+	}
+
+#index #list table tr td.service .description {
+	clear: both;
+	font-size: 0.8em;
+	color: #777;
+	padding: 0.2em;
+	}
+
+#index #list table tr td.service .linkTest {
+	float: left;
+	display: block;
+	margin-right: 4px;
+	background-image: url(../images/cog.png);
+	background-repeat: no-repeat;
+	width: 16px;
+	height: 16px;
+	}
+
+
+/*  PARAMETERS COLUMN  */
+#index #list table tr td.parameter {
+	padding: 2px;
+	}
+
+#index #list table tr td.parameter ul {
+	margin: 0px;
+	padding: 0px;
+	}
+
+#index #list table tr td.parameter ul li {
+	list-style: none;
+	display: block;
+	}
+
+#index #list table tr td.parameter .rules {
+	float: right;
+	font-size: 0.9em;
+	color: #777;
+	margin-right: 1em;
+	display: none;
+	}
+
+#index #list table tr td.parameter .rules .key {
+	font-style: italic;
+	padding-right: 5px;
+	}
+
+#index #list table tr td.parameter .rules .value {
+	font-weight: bold;
+	color: #444;
+	}

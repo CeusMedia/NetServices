@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<servicePoint>
+	<title>NetServices Disclosing Server Demo: Demo Services</title>
+	<description>
+	<![CDATA[
+		The CeusMedia::NetServices Disclosing Server Demo is providing demo services listed below<br/>
+		These services are for training and testing, only.<br/>
+	]]>
+	</description>
+	<url/>
+	<syntax/>
+	<services>
+		<service name="addIntegers" class="Services_Demo" format="txt">
+			<description>Adds two Integers.</description>
+			<format>json</format>
+			<format>php</format>
+			<format>txt</format>
+			<format>wddx</format>
+			<format>xml</format>
+			<parameter mandatory="yes" type="int" preg="/^-?[0-9]+$/" title="first integer">a</parameter>
+			<parameter mandatory="yes" type="int" preg="/^-?[0-9]+$/" title="second integer">b</parameter>
+		</service>
+		<service name="getArray" class="Services_Demo" format="php">
+			<description>Returns current Timestamp on Server.</description>
+			<format>json</format>
+			<format>php</format>
+			<format>wddx</format>
+			<format>xml</format>
+		</service>
+		<service name="getTestException" class="Services_Demo" format="php">
+			<description>Returns current Timestamp on Server.</description>
+			<format>json</format>
+			<format>php</format>
+			<format>txt</format>
+			<format>wddx</format>
+			<format>xml</format>
+			<parameter mandatory="no" type="bool" title="Flag: throw Exception, otherwise respond encoded Exception">throw</parameter>
+		</service>
+		<service name="getTimestamp" class="Services_Demo" format="txt">
+			<description>Returns current Timestamp on Server.</description>
+			<format>json</format>
+			<format>php</format>
+			<format>txt</format>
+			<format>wddx</format>
+			<format>xml</format>
+			<parameter mandatory="no" type="string" preg="@^([a-z_ .:-]+)?$@i" title="PHP Date Format, see http://www.php.net/date">output</parameter>
+		</service>
+		<service name="reflectInput" class="Services_Demo" format="txt">
+			<description>Returns given String filtering all JavaScripts.</description>
+			<format>json</format>
+			<format>php</format>
+			<format>txt</format>
+			<format>wddx</format>
+			<format>xml</format>
+			<filter title="Testing...">test</filter>
+			<filter title="Encode Base64">encodeBase64</filter>
+			<parameter mandatory="yes" type="string" filters="decodeBase64" title="String to be reflected by Server, HTML allowed, JavaScript not allowed.">input</parameter>
+		</service>
+		<service name="rot13" class="Services_Demo" format="txt">
+			<description>Applies rot13 filter to a string</description>
+			<format>json</format>
+			<format>php</format>
+			<format>txt</format>
+			<format>wddx</format>
+			<format>xml</format>
+			<parameter mandatory="yes" type="string" title="String to be rotated. HTML not allowed.">string</parameter>
+		</service>
+	</services>
+</servicePoint>

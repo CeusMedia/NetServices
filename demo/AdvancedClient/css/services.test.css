@@ -1,0 +1,111 @@
+
+/*  INFO PANEL  */
+#test #info {
+	float: right;
+	width: 300px;
+	}
+
+#test #info h3 {
+	margin: 0px;
+	padding: 0.3em 0.7em;
+	border-bottom: 1px solid #444;
+	}	
+
+#test #info dl {
+	background: #F7F7F7;
+	padding: 0.5em 1.2em;
+	}
+
+#test #info dl dt,
+#test #info dl dd {
+	margin: 0em;
+	padding: 0em;
+	}
+
+#test #info dl dt {
+	clear: both;
+	float: left;
+	}
+
+#test #info dl dd {
+	float: right;
+	font-style: italic;
+	margin-bottom: 0.5em;
+	}
+
+/*  CONTROL PANEL  */
+#test #control {
+	margin-right: 320px;
+	}
+#test #control h3 {
+	margin: 0px;
+	padding: 0.3em 0.7em;
+	border-bottom: 1px solid #444;
+	}	
+#test #control ul {
+	background: #F7F7F7;
+	margin: 0px;
+	padding: 0.5em 1em;
+	list-style: none;
+	}
+#test #control .rules .key {
+	font-style: italic;
+	padding-right: 5px;
+	}
+
+#test #control .rules .value {
+	font-weight: bold;
+	}
+
+
+
+
+/*  RESPONSE PANEL  */
+#test #response {
+	clear: both;
+	width: 100%;
+	overflow: auto;
+	word-wrap: break-word;
+	}
+#test #response xmp {
+	font-family: Lucida Console, Courier New;
+	font-size: 11px;
+	}
+
+
+#tabs {
+	display: none;
+	font-size: 0.9em;
+	}
+#tabs a {
+	outline: none;
+	}
+
+
+/*  --  TAB ICONS  --  */
+#tabs a.data span,
+#tabs a.exception span,
+#tabs a.response span,
+#tabs a.request span,
+#tabs a.trace span {
+	background-repeat: no-repeat;
+	background-position: 0px -1px;
+	padding-left: 18px;
+	padding-right: 5px;
+	}
+
+#tabs a.data span {
+	background-image: url(//icons.ceusmedia.com/famfamfam/mini/icon_accept.gif);
+	}
+#tabs a.exception span {
+	background-image: url(//icons.ceusmedia.com/famfamfam/mini/action_stop.gif);
+	}
+#tabs a.response span {
+	background-image: url(//icons.ceusmedia.com/famfamfam/mini/arrow_down.gif);
+	}
+#tabs a.request span {
+	background-image: url(//icons.ceusmedia.com/famfamfam/mini/arrow_up.gif);
+	}
+#tabs a.trace span {
+	background-image: url(//icons.ceusmedia.com/famfamfam/mini/icon_info.gif);
+	}

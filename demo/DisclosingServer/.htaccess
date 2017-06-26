@@ -1,0 +1,9 @@
+
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule (.*) ?___ENSpath=$1&%{QUERY_STRING} [L]
+
+FileETag none
+#ExpiresActive on
+#ExpiresDefault "access plus 3 days"

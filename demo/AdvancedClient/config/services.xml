@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<servicePoint>
+  <title>Public Net Services</title>
+  <description>
+    <![CDATA[
+      <h3>Welcome to the public Net Services.</h3>
+      These services are for training and testing, only.<br/>
+	  You can test <a href="./public/">more advanced public services</a>, too.<br/>
+    ]]>
+  </description>
+  <url/>
+  <syntax>?service={service}(&amp;format={format}[&amp;{parameter}={value}])</syntax>
+  <services>
+    <service name="sayHello" class="Services" format="txt">
+      <description>Says "Hello"</description>
+      <format>json</format>
+      <format>php</format>
+      <format>txt</format>
+      <format>wddx</format>
+      <format>xml</format>
+      <parameter mandatory="no" type="string" preg="/^(\S+)?$/" title="your name">name</parameter>
+    </service>
+  </services>
+</servicePoint>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<servicePoint>
+	<title>NetServices Disclosing Server Demo: Disclosure Services</title>
+	<description>
+	<![CDATA[
+		These services can be used to get information about services which are available within a service path, served by an NetServices service point.<br/>
+	]]>
+	</description>
+	<url/>
+	<syntax/>
+	<services>
+		<service name="getPaths" class="Services_Disclosure" format="xml">
+			<description>Lists all available service paths.</description>
+			<format>json</format>
+			<format>php</format>
+			<format>wddx</format>
+			<format>xml</format>
+		</service>
+		<service name="getPathDescription" class="Services_Disclosure" format="xml">
+			<description>Returns description of a service path.</description>
+			<format>json</format>
+			<format>php</format>
+			<format>txt</format>
+			<format>wddx</format>
+			<format>xml</format>
+			<parameter type="string" mandatory="yes" preg="/^\S+$/" title="Path ending with slash">path</parameter>
+		</service>
+		<service name="getPathTitle" class="Services_Disclosure" format="xml">
+			<description>Returns title of a service path.</description>
+			<format>json</format>
+			<format>php</format>
+			<format>txt</format>
+			<format>wddx</format>
+			<format>xml</format>
+			<parameter type="string" mandatory="yes" preg="/^\S+$/" title="Path ending with slash">path</parameter>
+		</service>
+		<service name="getServicesFromPath" class="Services_Disclosure" format="xml">
+			<description>Lists all services within a service path.</description>
+			<parameter type="string" mandatory="yes" preg="/^\S+$/" title="Path ending with slash">path</parameter>
+			<format>json</format>
+			<format>php</format>
+			<format>wddx</format>
+			<format>xml</format>
+		</service>
+		<service name="getServiceDescription" class="Services_Disclosure" format="xml">
+			<description>Returns description of a service.</description>
+			<parameter type="string" mandatory="yes" preg="/^\S+$/" title="Path ending with slash">path</parameter>
+			<parameter type="string" mandatory="yes" preg="/^\w+$/" title="Service name">service</parameter>
+			<format>json</format>
+			<format>php</format>
+			<format>wddx</format>
+			<format>xml</format>
+		</service>
+		<service name="getServiceFilters" class="Services_Disclosure" format="xml">
+			<description>Returns a list of filters applied to all parameters of a service.</description>
+			<parameter type="string" mandatory="yes" preg="/^\S+$/" title="Path ending with slash">path</parameter>
+			<parameter type="string" mandatory="yes" preg="/^\w+$/" title="Service name">service</parameter>
+			<format>json</format>
+			<format>php</format>
+			<format>wddx</format>
+			<format>xml</format>
+		</service>
+		<service name="getServiceFormats" class="Services_Disclosure" format="xml">
+			<description>Returns a list of supported response formats of a service.</description>
+			<parameter type="string" mandatory="yes" preg="/^\S+$/" title="Path ending with slash">path</parameter>
+			<parameter type="string" mandatory="yes" preg="/^\w+$/" title="Service name">service</parameter>
+			<format>json</format>
+			<format>php</format>
+			<format>wddx</format>
+			<format>xml</format>
+		</service>
+		<service name="getServiceRoles" class="Services_Disclosure" format="xml">
+			<description>Returns a list roles allowed to use a service.</description>
+			<parameter type="string" mandatory="yes" preg="/^\S+$/" title="Path ending with slash">path</parameter>
+			<parameter type="string" mandatory="yes" preg="/^\w+$/" title="Service name">service</parameter>
+			<format>json</format>
+			<format>php</format>
+			<format>wddx</format>
+			<format>xml</format>
+		</service>
+		<service name="getServiceParameters" class="Services_Disclosure" format="xml">
+			<description>Returns current Timestamp on Server.</description>
+			<parameter type="string" mandatory="yes" preg="/^\S+$/" title="Path ending with slash">path</parameter>
+			<parameter type="string" mandatory="yes" preg="/^\w+$/" title="Service name">service</parameter>
+			<format>json</format>
+			<format>php</format>
+			<format>wddx</format>
+			<format>xml</format>
+		</service>
+	</services>
+</servicePoint>

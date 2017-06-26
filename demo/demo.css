@@ -1,0 +1,38 @@
+/*dl dt,*/
+#demoSimpleTimeServer dl dt{
+	clear: left;
+	float: left;
+	width: 120px;
+	}
+/*dl dd,*/
+#demoSimpleTimeServer dl dd{
+	margin-left: 120px;
+	}
+xmp{
+	padding: 0.5em 1em;
+	background: #F7F7F7;
+/*	border: 1px solid #CCC;*/
+	border-left: 2px solid green;
+	font-size: 1.2em;
+	}
+div.code,
+pre.code{
+	padding: 0em 1.5em;
+	background: #F7F7F7;
+	border: 1px solid #BBB;
+	border-left: 3px solid green;
+	border-left: 6px solid #BBB;
+/*	overflow: hidden;
+	text-overflow: ellipsis;*/
+	overflow: auto;
+	box-shadow: 3px 2px 4px 1px #DDD;
+	}
+div.code > code{
+	border: none;
+	background: none;
+	}
+
+dl.dl-horizontal dd:after{
+	content: ".";
+	visibility: hidden;
+	}
